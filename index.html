@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
@@ -20,10 +20,15 @@
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
 
+    <div class="atmosphere" aria-hidden="true"></div>
+
     <header class="site-header" id="top">
       <div class="brand-wrap">
         <span class="brand-dot" aria-hidden="true"></span>
-        <span class="brand-text">Tan Jun Rong</span>
+        <div class="brand-text-wrap">
+          <span class="brand-text">Tan Jun Rong</span>
+          <span class="brand-sub">Software Developer</span>
+        </div>
       </div>
       <nav class="site-nav" aria-label="Primary">
         <a href="#about">About</a>
@@ -37,14 +42,14 @@
 
     <main id="main-content">
       <section class="section hero reveal" id="hero">
+        <p class="hero-marquee" aria-hidden="true">Software x Games x Automation x Systems x Design x</p>
         <div class="hero-grid">
-          <div>
-            <p class="eyebrow">Software Developer | Game Tech</p>
-            <h1>I build software for games and tools.</h1>
+          <div class="hero-copy-block">
+            <p class="eyebrow">Computer Science Undergraduate</p>
+            <h1>Code with a creative edge.</h1>
             <p class="hero-copy">
-              I am Jun Rong, a computer science undergraduate focused on game
-              development, QA automation, and developer tooling. I build
-              experiences that feel good and systems that scale.
+              I am Jun Rong, focused on game development, QA automation, and developer tooling. I build software
+              that is practical, fast to iterate, and engineered to ship.
             </p>
             <div class="cta-row" id="primary-links"></div>
           </div>
@@ -62,22 +67,24 @@
       </section>
 
       <section class="section reveal" id="about">
+        <p class="section-kicker">Profile</p>
         <h2>About</h2>
         <p>
-          I specialize in software development for interactive products, with a
-          background spanning gameplay systems, graphics programming, QA
-          automation, and production tooling. I enjoy translating ambiguous
-          ideas into reliable software through collaboration and fast iteration.
+          I specialize in software development for interactive products, with a background spanning gameplay systems,
+          graphics programming, QA automation, and production tooling. I enjoy translating ambiguous ideas into
+          reliable software through collaboration and fast iteration.
         </p>
       </section>
 
       <section class="section reveal" id="experience">
+        <p class="section-kicker">Track Record</p>
         <h2>Experience Timeline</h2>
         <div id="experience-timeline" class="timeline" aria-live="polite"></div>
       </section>
 
       <section class="section reveal" id="projects">
         <div class="section-head">
+          <p class="section-kicker">Selected Work</p>
           <h2>Featured Projects</h2>
           <p>Medium-depth case studies. Expand a card for technical details.</p>
         </div>
@@ -85,20 +92,24 @@
       </section>
 
       <section class="section reveal" id="skills">
+        <p class="section-kicker">Capabilities</p>
         <h2>Skills and Tools</h2>
         <div id="skills-groups" class="skills-groups" aria-live="polite"></div>
       </section>
 
       <section class="section reveal" id="education">
+        <p class="section-kicker">Credentials</p>
         <h2>Awards and Education</h2>
         <div class="edu-grid">
           <article class="card">
             <h3>Education</h3>
             <p>
-              <strong>Digipen Singapore</strong><br />BSc in Computer Science in
-              Interactive Media and Game Development (2022 - 2026)
+              <strong>Digipen Singapore</strong><br />BSc in Computer Science in Interactive Media and Game Development
+              (2022 - 2026)
             </p>
-            <p><strong>Temasek Polytechnic</strong><br />Diploma in Game Design &amp; Development (2017 - 2020)</p>
+            <p>
+              <strong>Temasek Polytechnic</strong><br />Diploma in Game Design &amp; Development (2017 - 2020)
+            </p>
           </article>
           <article class="card">
             <h3>Awards</h3>
@@ -112,11 +123,9 @@
       </section>
 
       <section class="section reveal" id="contact">
+        <p class="section-kicker">Let's Build</p>
         <h2>Contact</h2>
-        <p>
-          Open to software engineering opportunities in interactive media,
-          game tech, and automation tooling.
-        </p>
+        <p>Open to software engineering opportunities in interactive media, game tech, and automation tooling.</p>
         <div class="contact-grid" id="contact-links"></div>
       </section>
     </main>
