@@ -1,8 +1,124 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <title>My Site</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Tan Jun Rong - Software Developer portfolio featuring game development, QA automation, and software engineering work."
+    />
+    <title>Tan Jun Rong | Software Developer Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="script.js"></script>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header" id="top">
+      <div class="brand-wrap">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span class="brand-text">Tan Jun Rong</span>
+      </div>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#education">Education</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="section hero reveal" id="hero">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow">Software Developer | Game Tech</p>
+            <h1>Building playful systems with serious engineering discipline.</h1>
+            <p class="hero-copy">
+              I am Jun Rong, a computer science undergraduate focused on game
+              development, QA automation, and developer tooling. I build
+              experiences that feel good and systems that scale.
+            </p>
+            <div class="cta-row" id="primary-links"></div>
+          </div>
+          <aside class="snapshot-panel" aria-label="Quick resume snapshot">
+            <h2>Quick Resume Snapshot</h2>
+            <ul>
+              <li><strong>Current:</strong> Software Engineer Intern, Razer</li>
+              <li><strong>Core Stack:</strong> C#, C/C++, Python, Unity</li>
+              <li><strong>DevOps:</strong> Robot Framework, Jenkins, GitHub</li>
+              <li><strong>Education:</strong> Digipen SG (2022 - 2026)</li>
+              <li><strong>GPA:</strong> 4.02 / 5.00 (Degree), 3.76 / 4.00 (Diploma)</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section reveal" id="about">
+        <h2>About</h2>
+        <p>
+          I specialize in software development for interactive products, with a
+          background spanning gameplay systems, graphics programming, QA
+          automation, and production tooling. I enjoy translating ambiguous
+          ideas into reliable software through collaboration and fast iteration.
+        </p>
+      </section>
+
+      <section class="section reveal" id="experience">
+        <h2>Experience Timeline</h2>
+        <div id="experience-timeline" class="timeline" aria-live="polite"></div>
+      </section>
+
+      <section class="section reveal" id="projects">
+        <div class="section-head">
+          <h2>Featured Projects</h2>
+          <p>Medium-depth case studies. Expand a card for technical details.</p>
+        </div>
+        <div id="projects-grid" class="projects-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="section reveal" id="skills">
+        <h2>Skills and Tools</h2>
+        <div id="skills-groups" class="skills-groups" aria-live="polite"></div>
+      </section>
+
+      <section class="section reveal" id="education">
+        <h2>Awards and Education</h2>
+        <div class="edu-grid">
+          <article class="card">
+            <h3>Education</h3>
+            <p>
+              <strong>Digipen Singapore</strong><br />BSc in Computer Science in
+              Interactive Media and Game Development (2022 - 2026)
+            </p>
+            <p><strong>Temasek Polytechnic</strong><br />Diploma in Game Design &amp; Development (2017 - 2020)</p>
+          </article>
+          <article class="card">
+            <h3>Awards</h3>
+            <ul class="simple-list">
+              <li>Diploma with Merit (2020)</li>
+              <li>Director's List 2018/2019</li>
+              <li>Director's List 2017/2018</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section reveal" id="contact">
+        <h2>Contact</h2>
+        <p>
+          Open to software engineering opportunities in interactive media,
+          game tech, and automation tooling.
+        </p>
+        <div class="contact-grid" id="contact-links"></div>
+      </section>
+    </main>
   </body>
 </html>
