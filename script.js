@@ -1,7 +1,7 @@
 const profileLinks = [
   { label: "Download Resume", url: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true },
-  { label: "GitHub", url: null, fallbackLabel: "Add GitHub URL" },
-  { label: "LinkedIn", url: null, fallbackLabel: "Add LinkedIn URL" },
+  { label: "GitHub", url: null },
+  { label: "LinkedIn", url: null },
 ];
 
 const experience = [
@@ -16,7 +16,7 @@ const experience = [
     highlights: [
       "Built a physical test rig using electrical components and 3D-printed parts to support mouse QA automation.",
       "Wrote and maintained automated test cases using Robot Framework and Python, and deployed runs via Jenkins.",
-      "Developed internal tooling that automated repetitive tasks and improved team workflow speed by [METRIC TODO].",
+      "Developed internal tooling that automated repetitive tasks and improved team workflow speed.",
     ],
   },
   {
@@ -58,7 +58,7 @@ const projects = [
     highlights: [
       "Created editor UI components that enabled artists and designers to adjust gameplay parameters and assets quickly.",
       "Integrated memory tracking and performance visualization tools to expose bottlenecks and guide optimization.",
-      "Improved team productivity by streamlining asset integration and testing workflows by [METRIC TODO].",
+      "Improved team productivity by streamlining asset integration and testing workflows.",
     ],
     links: [
       { label: "Trailer", url: null },
@@ -87,7 +87,7 @@ const projects = [
     summary: "Implemented rendering and UX systems while taking ownership of 2D production assets.",
     stack: ["2D Rendering", "UI/UX", "Gameplay Input", "Art Pipeline"],
     highlights: [
-      "Built a streamlined 2D rendering pipeline to reduce load time and memory usage by [METRIC TODO].",
+      "Built a streamlined 2D rendering pipeline to reduce load time and memory usage.",
       "Stepped into 2D art production after a team transition and maintained visual consistency.",
       "Implemented responsive control schemes that improved menu and in-game interactions.",
     ],
@@ -133,17 +133,14 @@ const skillGroups = [
 const contactLinks = [
   { label: "Email", value: "tanjunrong321@gmail.com", url: "mailto:tanjunrong321@gmail.com" },
   { label: "Phone", value: "+65 9012 3414", url: "tel:+6590123414" },
-  { label: "GitHub", value: "Add your GitHub profile URL", url: null },
-  { label: "LinkedIn", value: "Add your LinkedIn URL", url: null },
-  { label: "Fiverr", value: "Add your Fiverr profile URL", url: null },
+  { label: "GitHub", value: "", url: null },
+  { label: "LinkedIn", value: "", url: null },
+  { label: "Fiverr", value: "", url: null },
 ];
 
 function createExternalLink(href, label, className = "link-chip") {
   if (!href) {
-    const disabled = document.createElement("span");
-    disabled.className = `${className} disabled`;
-    disabled.textContent = `${label} (Coming Soon)`;
-    return disabled;
+    return null;
   }
 
   const a = document.createElement("a");
@@ -158,8 +155,10 @@ function createExternalLink(href, label, className = "link-chip") {
 function renderPrimaryLinks() {
   const root = document.querySelector("#primary-links");
   profileLinks.forEach((link) => {
-    const element = createExternalLink(link.url, link.url ? link.label : link.fallbackLabel, link.primary ? "btn primary" : "btn");
-    root.append(element);
+    const element = createExternalLink(link.url, link.label, link.primary ? "btn primary" : "btn");
+    if (element) {
+      root.append(element);
+    }
   });
 }
 
@@ -219,15 +218,19 @@ function renderProjects() {
         <ul class="simple-list">
           ${project.highlights.map((point) => `<li>${point}</li>`).join("")}
         </ul>
-        <div class="link-row">
+        ${
+          project.links.some((link) => Boolean(link.url))
+            ? `<div class="link-row">
           ${project.links
-            .map((link) =>
-              link.url
-                ? `<a class="link-chip" href="${link.url}" target="_blank" rel="noopener noreferrer">${link.label}</a>`
-                : `<span class="link-chip disabled">${link.label} (Coming Soon)</span>`
+            .filter((link) => Boolean(link.url))
+            .map(
+              (link) =>
+                `<a class="link-chip" href="${link.url}" target="_blank" rel="noopener noreferrer">${link.label}</a>`
             )
             .join("")}
-        </div>
+        </div>`
+            : ""
+        }
       </div>
     `;
     root.append(article);
@@ -269,11 +272,7 @@ function renderSkills() {
 function renderContacts() {
   const root = document.querySelector("#contact-links");
   contactLinks.forEach((item) => {
-    if (!item.url) {
-      const card = document.createElement("div");
-      card.className = "contact-card";
-      card.innerHTML = `<h3>${item.label}</h3><p class="meta">${item.value}</p>`;
-      root.append(card);
+    if (!item.url || !item.value) {
       return;
     }
 
