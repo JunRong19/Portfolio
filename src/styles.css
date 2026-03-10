@@ -40,16 +40,40 @@ html {
 }
 
 body {
+  position: relative;
   margin: 0;
   color: var(--text);
   font-family: "Archivo", sans-serif;
   background:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px),
-    radial-gradient(900px 500px at 100% -10%, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 60%),
+    radial-gradient(880px 460px at 95% -8%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 62%),
     var(--bg);
-  background-size: 30px 30px, 30px 30px, auto, auto;
   min-height: 100vh;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: clamp(72px, 10vw, 148px);
+  pointer-events: none;
+  z-index: -1;
+  background:
+    linear-gradient(color-mix(in srgb, var(--line) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--line) 55%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.3;
+}
+
+body::before {
+  left: 0;
+  mask-image: linear-gradient(to right, #000 15%, transparent 100%);
+}
+
+body::after {
+  right: 0;
+  mask-image: linear-gradient(to left, #000 15%, transparent 100%);
 }
 
 .atmosphere {
@@ -71,8 +95,8 @@ body {
   position: fixed;
   left: 0;
   top: 0;
-  border: 1px solid color-mix(in srgb, var(--accent) 85%, var(--text));
-  background: color-mix(in srgb, var(--accent) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--text));
+  background: color-mix(in srgb, var(--accent) 38%, transparent);
   transform: translate3d(-999px, -999px, 0);
   opacity: 0;
   will-change: transform, opacity;
@@ -174,8 +198,6 @@ body {
   align-self: start;
   display: grid;
   gap: var(--space-3);
-  border-top: 1px solid var(--line-strong);
-  border-bottom: 1px solid var(--line);
   padding: var(--space-3) 0;
 }
 
@@ -194,10 +216,11 @@ h1 {
 }
 
 h2 {
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
   font-size: clamp(1.25rem, 2.5vw, 1.9rem);
   text-transform: uppercase;
   letter-spacing: 0.01em;
+  color: var(--text);
 }
 
 h3 {
@@ -242,11 +265,10 @@ p {
   gap: 0.8rem;
   text-decoration: none;
   color: var(--text-soft);
-  border-bottom: 1px solid var(--line);
   padding: 0.34rem 0;
   font-family: "IBM Plex Mono", monospace;
   font-size: 0.74rem;
-  transition: color var(--fast), border-color var(--fast);
+  transition: color var(--fast);
 }
 
 .text-link {
@@ -255,7 +277,6 @@ p {
 
 .text-link.strong {
   color: var(--text);
-  border-color: var(--line-strong);
   font-weight: 700;
 }
 
@@ -263,7 +284,6 @@ p {
 .contact-row:hover,
 .text-link:hover {
   color: var(--text);
-  border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
 }
 
 .right-flow {
@@ -273,7 +293,7 @@ p {
 
 .section {
   border-top: 1px solid var(--line-strong);
-  padding: var(--space-3) 0;
+  padding: var(--space-4) 0;
 }
 
 .timeline,
@@ -284,8 +304,7 @@ p {
 
 .timeline-item,
 .project-item {
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 0.7rem;
+  padding-bottom: 0.35rem;
 }
 
 .timeline-top,
@@ -427,7 +446,7 @@ p {
   }
 
   .section {
-    padding: 0.9rem 0;
+    padding: 1.15rem 0;
   }
 }
 
