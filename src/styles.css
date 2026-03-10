@@ -204,6 +204,7 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: clamp(1rem, 3vw, 2.1rem);
+  align-items: start;
 }
 
 .left-rail {
@@ -211,13 +212,21 @@ body {
   top: calc(var(--header-offset) + var(--space-4));
   align-self: start;
   display: block;
-  padding: var(--space-3) 0;
+  padding: 0;
   perspective: 1200px;
+  isolation: isolate;
+  overflow: hidden;
+  z-index: 2;
 }
 
 .cube-scene {
   position: relative;
   min-height: 520px;
+  padding: var(--space-3);
+  border: 1px solid var(--line-strong);
+  background: var(--bg-alt);
+  overflow: hidden;
+  contain: paint;
   transform-style: preserve-3d;
   transition: transform 620ms cubic-bezier(0.2, 0.75, 0.2, 1);
 }
@@ -228,19 +237,31 @@ body {
 
 .cube-face {
   position: absolute;
-  inset: 0;
+  inset: var(--space-3);
   display: grid;
   gap: var(--space-3);
+  background: var(--bg-alt);
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .cube-front {
-  transform: rotateY(0deg) translateZ(0px);
+  transform: rotateY(0deg) translateZ(1px);
+  opacity: 1;
 }
 
 .cube-side {
-  transform: rotateY(90deg) translateX(100%);
+  transform: rotateY(90deg) translate3d(100%, 0, 0);
   transform-origin: left center;
+  opacity: 0;
+}
+
+.cube-scene.is-rotated .cube-front {
+  opacity: 0.04;
+}
+
+.cube-scene.is-rotated .cube-side {
+  opacity: 1;
 }
 
 h1,
@@ -334,6 +355,8 @@ p {
 }
 
 .right-flow {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: var(--space-1);
 }
@@ -473,10 +496,16 @@ p {
     position: static;
     top: auto;
     perspective: 600px;
+    overflow: visible;
   }
 
   .cube-scene {
     min-height: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+    contain: none;
     transform-style: flat;
   }
 
@@ -493,6 +522,7 @@ p {
     border-top: 1px solid var(--line);
     padding-top: var(--space-3);
     transform: none;
+    opacity: 1;
     display: none;
   }
 
