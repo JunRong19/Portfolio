@@ -46,7 +46,10 @@ body {
   color: var(--text);
   font-family: "Archivo", sans-serif;
   background:
-    radial-gradient(880px 460px at 95% -8%, color-mix(in srgb, var(--accent) 12%, transparent) 0%, transparent 62%),
+    radial-gradient(1200px 700px at 8% -18%, #2a6bff7a 0%, transparent 62%),
+    radial-gradient(1100px 650px at 98% 0%, #7c4dff66 0%, transparent 64%),
+    radial-gradient(980px 600px at 50% 108%, #16b6d45e 0%, transparent 66%),
+    linear-gradient(165deg, #090d19 0%, #0b1020 45%, #080c16 100%),
     var(--bg);
   min-height: 100vh;
 }
@@ -83,16 +86,16 @@ body::after {
   pointer-events: none;
   z-index: -2;
   background:
-    radial-gradient(700px 380px at 12% 18%, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 70%),
-    radial-gradient(620px 320px at 88% 82%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 72%),
+    radial-gradient(760px 420px at 18% 22%, #7fd7ff2b 0%, transparent 72%),
+    radial-gradient(640px 340px at 84% 78%, #9c81ff24 0%, transparent 74%),
     repeating-linear-gradient(
       45deg,
-      color-mix(in srgb, var(--line) 22%, transparent) 0,
-      color-mix(in srgb, var(--line) 22%, transparent) 1px,
+      color-mix(in srgb, var(--line) 30%, transparent) 0,
+      color-mix(in srgb, var(--line) 30%, transparent) 1px,
       transparent 1px,
       transparent 14px
     );
-  opacity: 0.5;
+  opacity: 0.78;
 }
 
 .cursor-trail-layer {
@@ -241,7 +244,7 @@ body::after {
 
 .left-rail {
   position: sticky;
-  top: var(--header-offset);
+  top: calc(var(--header-offset) + var(--space-4));
   align-self: start;
   display: grid;
   gap: var(--space-3);
