@@ -212,8 +212,7 @@ body {
   top: calc(var(--header-offset) + var(--space-4));
   align-self: start;
   display: block;
-  padding: 0 var(--space-3) calc(var(--space-4) + var(--space-1)) 0;
-  border-right: 1px solid var(--line-strong);
+  padding: 0 var(--space-3) calc(var(--space-5) + var(--space-3)) 0;
   perspective: 1200px;
   isolation: isolate;
   overflow: hidden;
@@ -221,6 +220,7 @@ body {
 }
 
 .cube-scene {
+  --cube-depth: 220px;
   position: relative;
   min-height: 520px;
   padding: var(--space-3);
@@ -229,11 +229,16 @@ body {
   overflow: hidden;
   contain: paint;
   transform-style: preserve-3d;
-  transition: background var(--normal);
+  transition: transform 620ms cubic-bezier(0.2, 0.75, 0.2, 1), background var(--normal);
+  transform-origin: left center;
 }
 
 .cube-scene.is-rotated {
-  transform: none;
+  transform: translateZ(calc(var(--cube-depth) * -0.5)) rotateY(-90deg);
+}
+
+.cube-scene.is-switching {
+  transform: translateZ(calc(var(--cube-depth) * -0.5)) rotateY(-180deg);
 }
 
 .cube-face {
@@ -251,24 +256,12 @@ body {
 }
 
 .cube-front {
-  transform: rotateY(0deg) translateZ(1px);
+  transform: rotateY(0deg) translateZ(calc(var(--cube-depth) * 0.5));
   opacity: 1;
-  transform-origin: left center;
 }
 
 .cube-side {
-  transform: rotateY(90deg) translateZ(1px);
-  transform-origin: left center;
-  opacity: 0;
-}
-
-.cube-scene.is-rotated .cube-front {
-  transform: rotateY(-90deg) translateZ(1px);
-  opacity: 0;
-}
-
-.cube-scene.is-rotated .cube-side {
-  transform: rotateY(0deg) translateZ(1px);
+  transform: rotateY(90deg) translateZ(calc(var(--cube-depth) * 0.5));
   opacity: 1;
 }
 
@@ -510,6 +503,7 @@ p {
   }
 
   .cube-scene {
+    --cube-depth: 0px;
     min-height: auto;
     padding: 0;
     border: 0;
@@ -521,6 +515,10 @@ p {
 
   .cube-scene.is-rotated {
     transform: rotateY(-14deg) translateX(-8px);
+  }
+
+  .cube-scene.is-switching {
+    transform: rotateY(-16deg) translateX(-9px);
   }
 
   .cube-face {

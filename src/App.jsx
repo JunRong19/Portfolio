@@ -10,8 +10,68 @@ function App() {
   const [expandedProject, setExpandedProject] = useState(projects[0]?.id ?? "");
   const [leftPanelMode, setLeftPanelMode] = useState("profile");
   const [activeProjectId, setActiveProjectId] = useState(projects[0]?.id ?? "");
+  const [cubePhase, setCubePhase] = useState("idle");
+  const [pendingProjectId, setPendingProjectId] = useState("");
   const trailLayerRef = useRef(null);
+  const cubeTimerRef = useRef(null);
   const activeProject = projects.find((project) => project.id === activeProjectId) ?? projects[0];
+
+  const clearCubeTimer = () => {
+    if (!cubeTimerRef.current) {
+      return;
+    }
+    window.clearTimeout(cubeTimerRef.current);
+    cubeTimerRef.current = null;
+  };
+
+  const rotateToProject = (projectId) => {
+    if (!projectId) {
+      return;
+    }
+
+    if (leftPanelMode !== "projectDetail") {
+      clearCubeTimer();
+      setActiveProjectId(projectId);
+      setExpandedProject(projectId);
+      setCubePhase("rotating-in");
+      setLeftPanelMode("projectDetail");
+      cubeTimerRef.current = window.setTimeout(() => {
+        setCubePhase("idle");
+      }, 640);
+      return;
+    }
+
+    if (projectId === activeProjectId) {
+      setExpandedProject(projectId);
+      return;
+    }
+
+    clearCubeTimer();
+    setExpandedProject(projectId);
+    setPendingProjectId(projectId);
+    setCubePhase("switching");
+
+    cubeTimerRef.current = window.setTimeout(() => {
+      setActiveProjectId(projectId);
+      setPendingProjectId("");
+      setCubePhase("rotating-in");
+
+      cubeTimerRef.current = window.setTimeout(() => {
+        setCubePhase("idle");
+      }, 620);
+    }, 340);
+  };
+
+  const resetCube = () => {
+    clearCubeTimer();
+    setPendingProjectId("");
+    setCubePhase("rotating-out");
+    setLeftPanelMode("profile");
+    setExpandedProject("");
+    cubeTimerRef.current = window.setTimeout(() => {
+      setCubePhase("idle");
+    }, 620);
+  };
 
   useReveal();
   useCursorTrail(trailLayerRef, cursorTrailConfig);
@@ -47,7 +107,11 @@ function App() {
 
       <main id="main-content" className="layout-grid">
         <aside id="hero" className="left-rail">
-          <div className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""}`}>
+          <div
+            className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""} ${
+              cubePhase === "switching" ? "is-switching" : ""
+            }`}
+          >
             <div className="cube-face cube-front">
               <p className="eyebrow">{hero.eyebrow}</p>
               <h1>{hero.headline}</h1>
@@ -93,10 +157,7 @@ function App() {
               <button
                 type="button"
                 className="project-toggle left-back"
-                onClick={() => {
-                  setLeftPanelMode("profile");
-                  setExpandedProject("");
-                }}
+                onClick={resetCube}
               >
                 Back
               </button>
@@ -165,14 +226,10 @@ function App() {
                       aria-expanded={expanded}
                       onClick={() => {
                         if (expanded) {
-                          setExpandedProject("");
-                          setLeftPanelMode("profile");
+                          resetCube();
                           return;
                         }
-
-                        setExpandedProject(project.id);
-                        setActiveProjectId(project.id);
-                        setLeftPanelMode("projectDetail");
+                        rotateToProject(project.id);
                       }}
                     >
                       {expanded ? "Hide details" : "View details"}
