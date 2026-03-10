@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { contacts, cursorTrailConfig, experiences, hero, navItems, projects } from "./data/content";
 import { useCursorTrail } from "./hooks/useCursorTrail";
 import { useReveal } from "./hooks/useReveal";
@@ -10,8 +10,7 @@ function App() {
   const [expandedProject, setExpandedProject] = useState(projects[0]?.id ?? "");
   const [leftPanelMode, setLeftPanelMode] = useState("profile");
   const [activeProjectId, setActiveProjectId] = useState(projects[0]?.id ?? "");
-  const [cubePhase, setCubePhase] = useState("idle");
-  const [pendingProjectId, setPendingProjectId] = useState("");
+  const [cubeAngle, setCubeAngle] = useState(0);
   const trailLayerRef = useRef(null);
   const cubeTimerRef = useRef(null);
   const activeProject = projects.find((project) => project.id === activeProjectId) ?? projects[0];
@@ -33,11 +32,8 @@ function App() {
       clearCubeTimer();
       setActiveProjectId(projectId);
       setExpandedProject(projectId);
-      setCubePhase("rotating-in");
       setLeftPanelMode("projectDetail");
-      cubeTimerRef.current = window.setTimeout(() => {
-        setCubePhase("idle");
-      }, 640);
+      setCubeAngle(-90);
       return;
     }
 
@@ -48,33 +44,22 @@ function App() {
 
     clearCubeTimer();
     setExpandedProject(projectId);
-    setPendingProjectId(projectId);
-    setCubePhase("switching");
-
+    setCubeAngle((previous) => previous - 360);
     cubeTimerRef.current = window.setTimeout(() => {
       setActiveProjectId(projectId);
-      setPendingProjectId("");
-      setCubePhase("rotating-in");
-
-      cubeTimerRef.current = window.setTimeout(() => {
-        setCubePhase("idle");
-      }, 620);
-    }, 340);
+    }, 320);
   };
 
   const resetCube = () => {
     clearCubeTimer();
-    setPendingProjectId("");
-    setCubePhase("rotating-out");
     setLeftPanelMode("profile");
     setExpandedProject("");
-    cubeTimerRef.current = window.setTimeout(() => {
-      setCubePhase("idle");
-    }, 620);
+    setCubeAngle(0);
   };
 
   useReveal();
   useCursorTrail(trailLayerRef, cursorTrailConfig);
+  useEffect(() => () => clearCubeTimer(), []);
 
   return (
     <>
@@ -108,9 +93,8 @@ function App() {
       <main id="main-content" className="layout-grid">
         <aside id="hero" className="left-rail">
           <div
-            className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""} ${
-              cubePhase === "switching" ? "is-switching" : ""
-            }`}
+            className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""}`}
+            style={{ "--cube-angle": `${cubeAngle}deg` }}
           >
             <div className="cube-face cube-front">
               <p className="eyebrow">{hero.eyebrow}</p>
