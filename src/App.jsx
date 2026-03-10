@@ -163,7 +163,6 @@ function App() {
                       type="button"
                       className="project-toggle"
                       aria-expanded={expanded}
-                      aria-controls={`${project.id}-details`}
                       onClick={() => {
                         if (expanded) {
                           setExpandedProject("");
@@ -178,14 +177,6 @@ function App() {
                     >
                       {expanded ? "Hide details" : "View details"}
                     </button>
-
-                    <div id={`${project.id}-details`} className="project-details" hidden={!expanded}>
-                      <ul className="simple-list compact">
-                        {project.impactBullets.map((point) => (
-                          <li key={point}>{point}</li>
-                        ))}
-                      </ul>
-                    </div>
                   </article>
                 );
               })}

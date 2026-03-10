@@ -212,7 +212,8 @@ body {
   top: calc(var(--header-offset) + var(--space-4));
   align-self: start;
   display: block;
-  padding: 0;
+  padding: 0 var(--space-3) calc(var(--space-4) + var(--space-1)) 0;
+  border-right: 1px solid var(--line-strong);
   perspective: 1200px;
   isolation: isolate;
   overflow: hidden;
@@ -502,6 +503,8 @@ p {
   .left-rail {
     position: static;
     top: auto;
+    padding: 0;
+    border-right: 0;
     perspective: 600px;
     overflow: visible;
   }
