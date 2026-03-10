@@ -7,33 +7,68 @@ import "./styles.css";
 
 function App() {
   const { theme, toggleTheme } = useTheme("dark");
-  const [expandedProject, setExpandedProject] = useState(projects[0]?.id ?? "");
+  const initialProjectId = projects[0]?.id ?? "";
+  const [expandedProject, setExpandedProject] = useState("");
   const [leftPanelMode, setLeftPanelMode] = useState("profile");
-  const [activeProjectId, setActiveProjectId] = useState(projects[0]?.id ?? "");
+  const [activeProjectId, setActiveProjectId] = useState(initialProjectId);
+  const [faceProjectMap, setFaceProjectMap] = useState(() => [
+    initialProjectId,
+    initialProjectId,
+    initialProjectId,
+    initialProjectId,
+  ]);
   const [cubeAngle, setCubeAngle] = useState(0);
+  const [cubePhase, setCubePhase] = useState("idle");
+  const [pendingProjectId, setPendingProjectId] = useState("");
   const trailLayerRef = useRef(null);
-  const cubeTimerRef = useRef(null);
-  const activeProject = projects.find((project) => project.id === activeProjectId) ?? projects[0];
+  const cubeTimerRef = useRef([]);
+  const cubeBusyRef = useRef(false);
+  const CUBE_TRANSITION_MS = 520;
+  const CUBE_SWITCH_SWAP_MS = Math.round(CUBE_TRANSITION_MS * 0.5);
+  const SNAP_TICK_MS = 34;
+  const getFaceIndexFromAngle = (angle) => ((Math.round((-angle) / 90) % 4) + 4) % 4;
+  const visibleFaceIndex = getFaceIndexFromAngle(cubeAngle);
+  const mobileVisibleFaceIndex = leftPanelMode === "profile" ? 0 : visibleFaceIndex;
+  const getProjectById = (projectId) => projects.find((project) => project.id === projectId) ?? projects[0];
+  const frontDetailProject = getProjectById(faceProjectMap[0]);
+  const showProfileFront = leftPanelMode === "profile" || cubePhase === "rotating" || cubePhase === "returning";
 
   const clearCubeTimer = () => {
-    if (!cubeTimerRef.current) {
+    if (!cubeTimerRef.current.length) {
       return;
     }
-    window.clearTimeout(cubeTimerRef.current);
-    cubeTimerRef.current = null;
+    cubeTimerRef.current.forEach((timerId) => window.clearTimeout(timerId));
+    cubeTimerRef.current = [];
+  };
+
+  const queueCubeTimer = (fn, delay) => {
+    const timerId = window.setTimeout(fn, delay);
+    cubeTimerRef.current.push(timerId);
   };
 
   const rotateToProject = (projectId) => {
-    if (!projectId) {
+    if (!projectId || cubeBusyRef.current) {
       return;
     }
+    cubeBusyRef.current = true;
 
     if (leftPanelMode !== "projectDetail") {
       clearCubeTimer();
+      setPendingProjectId("");
       setActiveProjectId(projectId);
       setExpandedProject(projectId);
       setLeftPanelMode("projectDetail");
-      setCubeAngle(-90);
+      setCubePhase("rotating");
+      setFaceProjectMap((previous) => {
+        const next = [...previous];
+        next[1] = projectId;
+        return next;
+      });
+      setCubeAngle((previous) => Math.round(previous / 360) * 360 - 90);
+      queueCubeTimer(() => {
+        cubeBusyRef.current = false;
+        setCubePhase("idle");
+      }, CUBE_TRANSITION_MS);
       return;
     }
 
@@ -44,22 +79,63 @@ function App() {
 
     clearCubeTimer();
     setExpandedProject(projectId);
-    setCubeAngle((previous) => previous - 360);
-    cubeTimerRef.current = window.setTimeout(() => {
+    setPendingProjectId(projectId);
+    setCubePhase("switching");
+    setCubeAngle((previous) => {
+      const targetAngle = previous - 90;
+      const targetFaceIndex = getFaceIndexFromAngle(targetAngle);
+      setFaceProjectMap((faceMap) => {
+        const next = [...faceMap];
+        next[targetFaceIndex] = projectId;
+        return next;
+      });
+      return targetAngle;
+    });
+    queueCubeTimer(() => {
       setActiveProjectId(projectId);
-    }, 320);
+      setPendingProjectId("");
+    }, CUBE_SWITCH_SWAP_MS);
+    queueCubeTimer(() => {
+      setFaceProjectMap((previous) => {
+        const next = [...previous];
+        next[1] = projectId;
+        return next;
+      });
+      setCubePhase("snap");
+      setCubeAngle(-90);
+    }, CUBE_TRANSITION_MS);
+    queueCubeTimer(() => {
+      cubeBusyRef.current = false;
+      setCubePhase("idle");
+    }, CUBE_TRANSITION_MS + SNAP_TICK_MS);
   };
 
   const resetCube = () => {
+    if (cubeBusyRef.current || leftPanelMode !== "projectDetail") {
+      return;
+    }
+    cubeBusyRef.current = true;
     clearCubeTimer();
-    setLeftPanelMode("profile");
-    setExpandedProject("");
+    setPendingProjectId("");
+    setCubePhase("returning");
     setCubeAngle(0);
+    queueCubeTimer(() => {
+      setLeftPanelMode("profile");
+      setExpandedProject("");
+      setCubePhase("snap");
+    }, CUBE_TRANSITION_MS);
+    queueCubeTimer(() => {
+      cubeBusyRef.current = false;
+      setCubePhase("idle");
+    }, CUBE_TRANSITION_MS + SNAP_TICK_MS);
   };
 
   useReveal();
   useCursorTrail(trailLayerRef, cursorTrailConfig);
-  useEffect(() => () => clearCubeTimer(), []);
+  useEffect(() => () => {
+    clearCubeTimer();
+    cubeBusyRef.current = false;
+  }, []);
 
   return (
     <>
@@ -93,59 +169,108 @@ function App() {
       <main id="main-content" className="layout-grid">
         <aside id="hero" className="left-rail">
           <div
-            className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""}`}
+            className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""} phase-${cubePhase}`}
             style={{ "--cube-angle": `${cubeAngle}deg` }}
+            data-pending={pendingProjectId ? "true" : "false"}
           >
-            <div className="cube-face cube-front">
-              <p className="eyebrow">{hero.eyebrow}</p>
-              <h1>{hero.headline}</h1>
-              <p className="hero-copy">{hero.subheadline}</p>
+            <div
+              className="cube-face cube-front"
+              data-visible={visibleFaceIndex === 0 ? "true" : "false"}
+              data-mobile-visible={mobileVisibleFaceIndex === 0 ? "true" : "false"}
+            >
+              {showProfileFront ? (
+                <>
+                  <p className="eyebrow">{hero.eyebrow}</p>
+                  <h1>{hero.headline}</h1>
+                  <p className="hero-copy">{hero.subheadline}</p>
 
-              <div className="cta-row">
-                {hero.ctas.map((cta) => (
-                  <a key={cta.label} className={`text-link ${cta.primary ? "strong" : ""}`} href={cta.href}>
-                    {cta.label}
-                  </a>
-                ))}
-              </div>
+                  <div className="cta-row">
+                    {hero.ctas.map((cta) => (
+                      <a key={cta.label} className={`text-link ${cta.primary ? "strong" : ""}`} href={cta.href}>
+                        {cta.label}
+                      </a>
+                    ))}
+                  </div>
 
-              <div className="quick-links" aria-label="Quick contact links">
-                {contacts.map((item) => (
-                  <a key={item.id} className="quick-link" href={item.href}>
-                    <span>{item.label}</span>
-                    <span>{item.value}</span>
-                  </a>
-                ))}
-              </div>
+                  <div className="quick-links" aria-label="Quick contact links">
+                    {contacts.map((item) => (
+                      <a key={item.id} className="quick-link" href={item.href}>
+                        <span>{item.label}</span>
+                        <span>{item.value}</span>
+                      </a>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="eyebrow">Project Detail</p>
+                  <h2 className="panel-title">{frontDetailProject.title}</h2>
+                  <p className="meta">
+                    {frontDetailProject.role} / {frontDetailProject.period}
+                  </p>
+                  <p className="hero-copy">{frontDetailProject.summary}</p>
+                  <div className="tag-row">
+                    {frontDetailProject.stack.map((tag) => (
+                      <span className="tag" key={`front-${tag}`}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <ul className="simple-list compact">
+                    {frontDetailProject.impactBullets.slice(0, 3).map((point) => (
+                      <li key={`front-${point}`}>{point}</li>
+                    ))}
+                  </ul>
+                  <button
+                    type="button"
+                    className="project-toggle left-back"
+                    onClick={resetCube}
+                  >
+                    Back
+                  </button>
+                </>
+              )}
             </div>
 
-            <div className="cube-face cube-side" aria-live="polite">
-              <p className="eyebrow">Project Detail</p>
-              <h2 className="panel-title">{activeProject.title}</h2>
-              <p className="meta">
-                {activeProject.role} / {activeProject.period}
-              </p>
-              <p className="hero-copy">{activeProject.summary}</p>
-              <div className="tag-row">
-                {activeProject.stack.map((tag) => (
-                  <span className="tag" key={`left-${tag}`}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <ul className="simple-list compact">
-                {activeProject.impactBullets.slice(0, 3).map((point) => (
-                  <li key={`left-${point}`}>{point}</li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                className="project-toggle left-back"
-                onClick={resetCube}
-              >
-                Back
-              </button>
-            </div>
+            {[1, 2, 3].map((faceIndex) => {
+              const faceProject = getProjectById(faceProjectMap[faceIndex]);
+              const faceClass = faceIndex === 1 ? "cube-right" : faceIndex === 2 ? "cube-back" : "cube-left";
+              return (
+                <div
+                  className={`cube-face ${faceClass}`}
+                  key={faceClass}
+                  data-visible={visibleFaceIndex === faceIndex ? "true" : "false"}
+                  data-mobile-visible={mobileVisibleFaceIndex === faceIndex ? "true" : "false"}
+                  aria-live={visibleFaceIndex === faceIndex ? "polite" : "off"}
+                >
+                  <p className="eyebrow">Project Detail</p>
+                  <h2 className="panel-title">{faceProject.title}</h2>
+                  <p className="meta">
+                    {faceProject.role} / {faceProject.period}
+                  </p>
+                  <p className="hero-copy">{faceProject.summary}</p>
+                  <div className="tag-row">
+                    {faceProject.stack.map((tag) => (
+                      <span className="tag" key={`${faceClass}-${tag}`}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <ul className="simple-list compact">
+                    {faceProject.impactBullets.slice(0, 3).map((point) => (
+                      <li key={`${faceClass}-${point}`}>{point}</li>
+                    ))}
+                  </ul>
+                  <button
+                    type="button"
+                    className="project-toggle left-back"
+                    onClick={resetCube}
+                  >
+                    Back
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </aside>
 
