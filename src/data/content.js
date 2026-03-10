@@ -25,13 +25,6 @@
  */
 
 /**
- * @typedef {Object} SkillGroup
- * @property {string} id
- * @property {string} title
- * @property {string[]} items
- */
-
-/**
  * @typedef {Object} ContactItem
  * @property {string} id
  * @property {string} label
@@ -39,23 +32,28 @@
  * @property {string} href
  */
 
+/**
+ * @typedef {Object} CursorTrailConfig
+ * @property {number} maxDots
+ * @property {number} dotLifeMs
+ * @property {number} spawnIntervalMs
+ * @property {[number, number]} dotSizeRange
+ */
+
 export const THEME_KEY = "portfolio-theme";
 
 export const navItems = [
-  { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
-  { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ];
 
 export const hero = {
   eyebrow: "Software Developer",
-  headline: "Engineering that ships.",
-  subheadline: "Game tech, QA automation, and tooling. Clear outcomes. Minimal noise.",
-  portrait: "placeholders/portrait.svg",
+  headline: "Built to ship.",
+  subheadline: "I build game tech, QA automation, and internal tools with measurable delivery impact.",
   ctas: [
-    { label: "Download Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true },
+    { label: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true },
     { label: "GitHub", href: "#" },
     { label: "LinkedIn", href: "#" },
   ],
@@ -69,9 +67,9 @@ export const experiences = [
     role: "Software Engineer Intern",
     period: "2025 - Present",
     impactBullets: [
-      "Built internal QA workflow automation for hardware validation.",
-      "Reduced repetitive test execution effort with scripting and tooling.",
-      "Partnered cross-functionally to improve test reliability and reporting.",
+      "Built QA workflow automation for hardware validation.",
+      "Reduced manual test effort with internal scripts.",
+      "Improved reliability and reporting across test runs.",
     ],
   },
   {
@@ -80,9 +78,9 @@ export const experiences = [
     role: "Game QA Analyst",
     period: "2023 - 2025",
     impactBullets: [
-      "Delivered reproducible bug reports with impact-based prioritization.",
-      "Validated gameplay and performance issues across multiple builds.",
-      "Maintained quality feedback loops with development teams.",
+      "Delivered reproducible bug reports with priority context.",
+      "Validated gameplay and performance across releases.",
+      "Maintained rapid feedback loops with development teams.",
     ],
   },
   {
@@ -91,9 +89,9 @@ export const experiences = [
     role: "Game Programmer Intern",
     period: "2019 - 2020",
     impactBullets: [
-      "Implemented production-ready gameplay features in Unity.",
-      "Supported release readiness for Android and iOS builds.",
-      "Contributed to iterative sprint delivery under tight timelines.",
+      "Implemented production features in Unity.",
+      "Supported Android and iOS release readiness.",
+      "Contributed to iterative sprint delivery.",
     ],
   },
 ];
@@ -105,12 +103,12 @@ export const projects = [
     title: "Project Placeholder One",
     role: "Tools Programmer",
     period: "8 months",
-    summary: "Built editor tools and diagnostics to accelerate content iteration.",
+    summary: "Built editor tooling and diagnostics for faster iteration.",
     stack: ["C#", "Unity", "Tooling"],
     impactBullets: [
-      "Created internal utility interfaces for faster designer workflows.",
-      "Introduced profiling checkpoints for performance tracking.",
-      "Improved team throughput by reducing manual setup work.",
+      "Built utility interfaces to speed designer workflows.",
+      "Added profiling checkpoints for bottleneck detection.",
+      "Reduced setup friction for repeated test cycles.",
     ],
     coverImage: "placeholders/project-cover.svg",
     galleryImages: [
@@ -124,12 +122,12 @@ export const projects = [
     title: "Project Placeholder Two",
     role: "Technical Lead",
     period: "8 months",
-    summary: "Owned architecture and coordination across gameplay and systems.",
+    summary: "Owned architecture and cross-discipline delivery alignment.",
     stack: ["C++", "Architecture", "AI"],
     impactBullets: [
       "Defined maintainable technical direction for core systems.",
-      "Unblocked high-risk implementation issues during production.",
-      "Aligned engineering decisions with design and art requirements.",
+      "Resolved production blockers in high-risk areas.",
+      "Aligned engineering decisions with design constraints.",
     ],
     coverImage: "placeholders/project-cover.svg",
     galleryImages: [
@@ -143,12 +141,12 @@ export const projects = [
     title: "Project Placeholder Three",
     role: "Graphics Programmer",
     period: "4 months",
-    summary: "Implemented rendering and UI systems for a production prototype.",
+    summary: "Implemented rendering and interaction systems for prototype delivery.",
     stack: ["Rendering", "UI/UX", "Optimization"],
     impactBullets: [
-      "Delivered rendering improvements for lower memory overhead.",
-      "Implemented responsive interaction patterns for player UX.",
-      "Maintained visual consistency across changing team constraints.",
+      "Reduced memory overhead in rendering workflows.",
+      "Implemented responsive interaction flows for players.",
+      "Maintained visual consistency under production changes.",
     ],
     coverImage: "placeholders/project-cover.svg",
     galleryImages: [
@@ -159,14 +157,6 @@ export const projects = [
   },
 ];
 
-/** @type {SkillGroup[]} */
-export const skillGroups = [
-  { id: "languages", title: "Languages", items: ["C#", "C/C++", "Python"] },
-  { id: "engines", title: "Engines & Tools", items: ["Unity", "Git", "Jenkins"] },
-  { id: "qa", title: "QA & DevOps", items: ["Robot Framework", "Automation", "CI Workflows"] },
-  { id: "focus", title: "Delivery Focus", items: ["Tooling", "Performance", "Cross-team Execution"] },
-];
-
 /** @type {ContactItem[]} */
 export const contacts = [
   { id: "email", label: "Email", value: "your-email@domain.com", href: "mailto:your-email@domain.com" },
@@ -174,3 +164,11 @@ export const contacts = [
   { id: "github", label: "GitHub", value: "github.com/your-handle", href: "https://github.com" },
   { id: "linkedin", label: "LinkedIn", value: "linkedin.com/in/your-handle", href: "https://linkedin.com" },
 ];
+
+/** @type {CursorTrailConfig} */
+export const cursorTrailConfig = {
+  maxDots: 26,
+  dotLifeMs: 520,
+  spawnIntervalMs: 20,
+  dotSizeRange: [2, 7],
+};
