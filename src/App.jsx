@@ -8,7 +8,10 @@ import "./styles.css";
 function App() {
   const { theme, toggleTheme } = useTheme("dark");
   const [expandedProject, setExpandedProject] = useState(projects[0]?.id ?? "");
+  const [leftPanelMode, setLeftPanelMode] = useState("profile");
+  const [activeProjectId, setActiveProjectId] = useState(projects[0]?.id ?? "");
   const trailLayerRef = useRef(null);
+  const activeProject = projects.find((project) => project.id === activeProjectId) ?? projects[0];
 
   useReveal();
   useCursorTrail(trailLayerRef, cursorTrailConfig);
@@ -44,25 +47,60 @@ function App() {
 
       <main id="main-content" className="layout-grid">
         <aside id="hero" className="left-rail">
-          <p className="eyebrow">{hero.eyebrow}</p>
-          <h1>{hero.headline}</h1>
-          <p className="hero-copy">{hero.subheadline}</p>
+          <div className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""}`}>
+            <div className="cube-face cube-front">
+              <p className="eyebrow">{hero.eyebrow}</p>
+              <h1>{hero.headline}</h1>
+              <p className="hero-copy">{hero.subheadline}</p>
 
-          <div className="cta-row">
-            {hero.ctas.map((cta) => (
-              <a key={cta.label} className={`text-link ${cta.primary ? "strong" : ""}`} href={cta.href}>
-                {cta.label}
-              </a>
-            ))}
-          </div>
+              <div className="cta-row">
+                {hero.ctas.map((cta) => (
+                  <a key={cta.label} className={`text-link ${cta.primary ? "strong" : ""}`} href={cta.href}>
+                    {cta.label}
+                  </a>
+                ))}
+              </div>
 
-          <div className="quick-links" aria-label="Quick contact links">
-            {contacts.map((item) => (
-              <a key={item.id} className="quick-link" href={item.href}>
-                <span>{item.label}</span>
-                <span>{item.value}</span>
-              </a>
-            ))}
+              <div className="quick-links" aria-label="Quick contact links">
+                {contacts.map((item) => (
+                  <a key={item.id} className="quick-link" href={item.href}>
+                    <span>{item.label}</span>
+                    <span>{item.value}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="cube-face cube-side" aria-live="polite">
+              <p className="eyebrow">Project Detail</p>
+              <h2 className="panel-title">{activeProject.title}</h2>
+              <p className="meta">
+                {activeProject.role} / {activeProject.period}
+              </p>
+              <p className="hero-copy">{activeProject.summary}</p>
+              <div className="tag-row">
+                {activeProject.stack.map((tag) => (
+                  <span className="tag" key={`left-${tag}`}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <ul className="simple-list compact">
+                {activeProject.impactBullets.slice(0, 3).map((point) => (
+                  <li key={`left-${point}`}>{point}</li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                className="project-toggle left-back"
+                onClick={() => {
+                  setLeftPanelMode("profile");
+                  setExpandedProject("");
+                }}
+              >
+                Back
+              </button>
+            </div>
           </div>
         </aside>
 
@@ -126,7 +164,17 @@ function App() {
                       className="project-toggle"
                       aria-expanded={expanded}
                       aria-controls={`${project.id}-details`}
-                      onClick={() => setExpandedProject(expanded ? "" : project.id)}
+                      onClick={() => {
+                        if (expanded) {
+                          setExpandedProject("");
+                          setLeftPanelMode("profile");
+                          return;
+                        }
+
+                        setExpandedProject(project.id);
+                        setActiveProjectId(project.id);
+                        setLeftPanelMode("projectDetail");
+                      }}
                     >
                       {expanded ? "Hide details" : "View details"}
                     </button>
