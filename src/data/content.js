@@ -11,8 +11,6 @@
  * @property {string} summary
  * @property {string[]} stack
  * @property {string[]} impactBullets
- * @property {string} coverImage
- * @property {string[]} galleryImages
  */
 
 /**
@@ -110,12 +108,6 @@ export const projects = [
       "Added profiling checkpoints for bottleneck detection.",
       "Reduced setup friction for repeated test cycles.",
     ],
-    coverImage: "placeholders/project-cover.svg",
-    galleryImages: [
-      "placeholders/project-gallery-1.svg",
-      "placeholders/project-gallery-2.svg",
-      "placeholders/project-gallery-3.svg",
-    ],
   },
   {
     id: "project-2",
@@ -129,12 +121,6 @@ export const projects = [
       "Resolved production blockers in high-risk areas.",
       "Aligned engineering decisions with design constraints.",
     ],
-    coverImage: "placeholders/project-cover.svg",
-    galleryImages: [
-      "placeholders/project-gallery-1.svg",
-      "placeholders/project-gallery-2.svg",
-      "placeholders/project-gallery-3.svg",
-    ],
   },
   {
     id: "project-3",
@@ -147,12 +133,6 @@ export const projects = [
       "Reduced memory overhead in rendering workflows.",
       "Implemented responsive interaction flows for players.",
       "Maintained visual consistency under production changes.",
-    ],
-    coverImage: "placeholders/project-cover.svg",
-    galleryImages: [
-      "placeholders/project-gallery-1.svg",
-      "placeholders/project-gallery-2.svg",
-      "placeholders/project-gallery-3.svg",
     ],
   },
 ];

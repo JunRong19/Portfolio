@@ -5,10 +5,6 @@ import { useReveal } from "./hooks/useReveal";
 import { useTheme } from "./hooks/useTheme";
 import "./styles.css";
 
-function asset(path) {
-  return `${import.meta.env.BASE_URL}${path}`;
-}
-
 function App() {
   const { theme, toggleTheme } = useTheme("dark");
   const [expandedProject, setExpandedProject] = useState(projects[0]?.id ?? "");
@@ -41,12 +37,13 @@ function App() {
           onClick={toggleTheme}
           aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
         >
-          {theme === "dark" ? "Light" : "Dark"}
+          <span className="theme-icon" aria-hidden="true" />
+          <span className="sr-only">Toggle theme</span>
         </button>
       </header>
 
       <main id="main-content" className="layout-grid">
-        <aside id="hero" className="left-rail" data-reveal>
+        <aside id="hero" className="left-rail">
           <p className="eyebrow">{hero.eyebrow}</p>
           <h1>{hero.headline}</h1>
           <p className="hero-copy">{hero.subheadline}</p>
@@ -120,6 +117,10 @@ function App() {
                       ))}
                     </div>
 
+                    <div className="project-placeholder" aria-hidden="true">
+                      Project Visual Placeholder
+                    </div>
+
                     <button
                       type="button"
                       className="project-toggle"
@@ -136,11 +137,6 @@ function App() {
                           <li key={point}>{point}</li>
                         ))}
                       </ul>
-                      <div className="gallery-strip" aria-label="Project gallery placeholders">
-                        {project.galleryImages.map((img, index) => (
-                          <img key={img} src={asset(img)} alt={`${project.title} placeholder ${index + 1}`} className="gallery-item" />
-                        ))}
-                      </div>
                     </div>
                   </article>
                 );
