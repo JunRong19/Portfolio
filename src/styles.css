@@ -41,43 +41,16 @@ html {
 }
 
 body {
-  position: relative;
   margin: 0;
   color: var(--text);
   font-family: "Archivo", sans-serif;
   background:
-    radial-gradient(1200px 700px at 8% -18%, #2a6bff7a 0%, transparent 62%),
-    radial-gradient(1100px 650px at 98% 0%, #7c4dff66 0%, transparent 64%),
-    radial-gradient(980px 600px at 50% 108%, #16b6d45e 0%, transparent 66%),
-    linear-gradient(165deg, #090d19 0%, #0b1020 45%, #080c16 100%),
+    linear-gradient(color-mix(in srgb, var(--line) 38%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--line) 38%, transparent) 1px, transparent 1px),
+    radial-gradient(900px 500px at 100% -10%, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 62%),
     var(--bg);
+  background-size: 30px 30px, 30px 30px, auto, auto;
   min-height: 100vh;
-}
-
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  width: clamp(72px, 10vw, 148px);
-  pointer-events: none;
-  z-index: -1;
-  background:
-    linear-gradient(color-mix(in srgb, var(--line) 55%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--line) 55%, transparent) 1px, transparent 1px);
-  background-size: 48px 48px;
-  opacity: 0.3;
-}
-
-body::before {
-  left: 0;
-  mask-image: linear-gradient(to right, #000 15%, transparent 100%);
-}
-
-body::after {
-  right: 0;
-  mask-image: linear-gradient(to left, #000 15%, transparent 100%);
 }
 
 .atmosphere {
@@ -85,17 +58,8 @@ body::after {
   inset: 0;
   pointer-events: none;
   z-index: -2;
-  background:
-    radial-gradient(760px 420px at 18% 22%, #7fd7ff2b 0%, transparent 72%),
-    radial-gradient(640px 340px at 84% 78%, #9c81ff24 0%, transparent 74%),
-    repeating-linear-gradient(
-      45deg,
-      color-mix(in srgb, var(--line) 30%, transparent) 0,
-      color-mix(in srgb, var(--line) 30%, transparent) 1px,
-      transparent 1px,
-      transparent 14px
-    );
-  opacity: 0.78;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg-alt) 35%, transparent), transparent);
+  opacity: 1;
 }
 
 .cursor-trail-layer {
