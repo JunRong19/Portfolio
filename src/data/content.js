@@ -48,7 +48,7 @@ export const navItems = [
 
 export const hero = {
   eyebrow: "Software Developer",
-  headline: "Built to ship.",
+  headline: "Hello!",
   subheadline: "I build game tech, QA automation, and internal tools with measurable delivery impact.",
   ctas: [
     { label: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true },
