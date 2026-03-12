@@ -6,6 +6,8 @@ import { useTheme } from "./hooks/useTheme";
 import "./styles.css";
 
 function App() {
+  const BASE_CUBE_SHELL_HEIGHT = 560;
+  const DETAIL_HEIGHT_DELTA = 96;
   const { theme, toggleTheme } = useTheme("dark");
   const initialProjectId = projects[0]?.id ?? "";
   const [expandedProject, setExpandedProject] = useState("");
@@ -23,11 +25,15 @@ function App() {
   const [showSettleFeedback, setShowSettleFeedback] = useState(false);
   const trailLayerRef = useRef(null);
   const cubeShellRef = useRef(null);
+  const profileProbeRef = useRef(null);
+  const detailProbeRefs = useRef({});
   const cubeTimerRef = useRef([]);
   const settleFeedbackTimerRef = useRef(null);
   const cubeBusyRef = useRef(false);
   const queuedResetRef = useRef(false);
   const [cubeDepth, setCubeDepth] = useState(260);
+  const [profileShellHeight, setProfileShellHeight] = useState(BASE_CUBE_SHELL_HEIGHT);
+  const [detailShellHeight, setDetailShellHeight] = useState(BASE_CUBE_SHELL_HEIGHT + DETAIL_HEIGHT_DELTA);
   const CUBE_TRANSITION_MS = 520;
   const SNAP_TICK_MS = 34;
   const SETTLE_FEEDBACK_MS = 620;
@@ -35,12 +41,30 @@ function App() {
   const visibleFaceIndex = getFaceIndexFromAngle(cubeAngle);
   const mobileVisibleFaceIndex = leftPanelMode === "profile" ? 0 : visibleFaceIndex;
   const getProjectById = (projectId) => projects.find((project) => project.id === projectId) ?? projects[0];
+  const resolvePublicAsset = (assetPath) => {
+    if (!assetPath) {
+      return "";
+    }
+    if (/^(?:[a-z]+:)?\/\//i.test(assetPath)) {
+      return assetPath;
+    }
+
+    const normalizedPath = assetPath.startsWith("/") ? assetPath.slice(1) : assetPath;
+    return `${import.meta.env.BASE_URL}${normalizedPath}`;
+  };
   const frontDetailProject = getProjectById(faceProjectMap[0]);
   const showProfileFront = leftPanelMode === "profile" || cubePhase === "rotating";
   const isCubeInteractive = cubePhase === "idle";
+  const isExpandedHeight = cubePhase !== "returning" && leftPanelMode === "projectDetail";
+  const resolvedShellHeight = isExpandedHeight ? detailShellHeight : profileShellHeight;
+  const cubeShellStyle = {
+    "--cube-shell-height": `${resolvedShellHeight}px`,
+    "--cube-transition-ms": `${CUBE_TRANSITION_MS}ms`,
+  };
   const cubeSceneStyle = {
     "--cube-angle": `${cubeAngle}deg`,
     "--cube-depth": `${cubeDepth}px`,
+    "--cube-shell-height": `${resolvedShellHeight}px`,
     "--cube-settle-ms": `${SETTLE_FEEDBACK_MS}ms`,
     "--cube-transition-ms": `${CUBE_TRANSITION_MS}ms`,
   };
@@ -220,6 +244,15 @@ function App() {
         {project.role} / {project.period}
       </p>
       <p className="hero-copy">{project.summary}</p>
+      {project.image ? (
+        <figure className="project-detail-media">
+          <img
+            className="project-detail-image"
+            src={resolvePublicAsset(project.image)}
+            alt={project.imageAlt ?? `${project.title} preview`}
+          />
+        </figure>
+      ) : null}
       <div className="tag-row">
         {project.stack.map((tag) => (
           <span className="tag" key={`${keyPrefix}-${tag}`}>
@@ -244,6 +277,46 @@ function App() {
 
   useReveal();
   useCursorTrail(trailLayerRef, cursorTrailConfig);
+
+  useEffect(() => {
+    const profileNode = profileProbeRef.current;
+    const detailNodes = projects
+      .map((project) => detailProbeRefs.current[project.id])
+      .filter(Boolean);
+
+    if (!profileNode || !detailNodes.length || typeof ResizeObserver === "undefined") {
+      return undefined;
+    }
+
+    const updateMeasuredHeights = () => {
+      const nextProfileHeight = Math.max(
+        BASE_CUBE_SHELL_HEIGHT,
+        Math.ceil(profileNode.getBoundingClientRect().height),
+      );
+      const maxDetailHeight = detailNodes.reduce((largestHeight, node) => (
+        Math.max(largestHeight, Math.ceil(node.getBoundingClientRect().height))
+      ), 0);
+      const nextDetailHeight = Math.max(
+        nextProfileHeight + DETAIL_HEIGHT_DELTA,
+        maxDetailHeight,
+      );
+
+      setProfileShellHeight((previous) => (previous === nextProfileHeight ? previous : nextProfileHeight));
+      setDetailShellHeight((previous) => (previous === nextDetailHeight ? previous : nextDetailHeight));
+    };
+
+    updateMeasuredHeights();
+
+    const observer = new ResizeObserver(() => {
+      updateMeasuredHeights();
+    });
+
+    observer.observe(profileNode);
+    detailNodes.forEach((node) => observer.observe(node));
+
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const node = cubeShellRef.current;
     if (!node || typeof ResizeObserver === "undefined") {
@@ -319,7 +392,11 @@ function App() {
 
       <main id="main-content" className="layout-grid">
         <aside id="hero" className="left-rail">
-          <div ref={cubeShellRef} className={`cube-shell phase-${cubePhase}`}>
+          <div
+            ref={cubeShellRef}
+            className={`cube-shell phase-${cubePhase}`}
+            style={cubeShellStyle}
+          >
             <div
               className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""} phase-${cubePhase}`}
               style={cubeSceneStyle}
@@ -334,7 +411,6 @@ function App() {
                   <div className="cube-face-feedback" aria-hidden="true">
                     <span className="cube-face-feedback-branch cube-face-feedback-branch-top-right" />
                     <span className="cube-face-feedback-branch cube-face-feedback-branch-left-bottom" />
-                    <span className="cube-face-feedback-spark" />
                   </div>
                 ) : null}
                 {showProfileFront ? renderProfileFace("front-profile") : renderProjectFace(frontDetailProject, "front-detail")}
@@ -356,6 +432,27 @@ function App() {
                   </div>
                 );
               })}
+            </div>
+
+            <div className="cube-measurements" aria-hidden="true">
+              <div ref={profileProbeRef} className="cube-measure-probe cube-measure-probe-profile">
+                {renderProfileFace("measure-profile")}
+              </div>
+              {projects.map((project) => (
+                <div
+                  key={`measure-${project.id}`}
+                  ref={(node) => {
+                    if (node) {
+                      detailProbeRefs.current[project.id] = node;
+                      return;
+                    }
+                    delete detailProbeRefs.current[project.id];
+                  }}
+                  className="cube-measure-probe cube-measure-probe-detail"
+                >
+                  {renderProjectFace(project, `measure-${project.id}`)}
+                </div>
+              ))}
             </div>
           </div>
         </aside>

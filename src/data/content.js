@@ -9,6 +9,8 @@
  * @property {string} role
  * @property {string} period
  * @property {string} summary
+ * @property {string} [image]
+ * @property {string} [imageAlt]
  * @property {string[]} stack
  * @property {string[]} impactBullets
  */
@@ -102,6 +104,8 @@ export const projects = [
     role: "Tools Programmer",
     period: "8 months",
     summary: "Objective placeholder: define the core delivery goal and measurable success metric.",
+    image: "/images/temp.jpg",
+    imageAlt: "Project detail visual for Project Placeholder One.",
     stack: ["C#", "Unity", "Tooling"],
     impactBullets: [
       "Constraints placeholder: list technical and timeline constraints.",
