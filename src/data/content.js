@@ -3,6 +3,14 @@
  */
 
 /**
+ * @typedef {Object} LinkItem
+ * @property {string} label
+ * @property {string} href
+ * @property {boolean} [primary]
+ * @property {boolean} [newTab]
+ */
+
+/**
  * @typedef {Object} Project
  * @property {string} id
  * @property {string} title
@@ -21,6 +29,8 @@
  * @property {string} company
  * @property {string} role
  * @property {string} period
+ * @property {string} [logo]
+ * @property {string} [logoAlt]
  * @property {string[]} impactBullets
  */
 
@@ -53,9 +63,9 @@ export const hero = {
   headline: "Hello!",
   subheadline: "I build game tech, QA automation, and internal tools with measurable delivery impact.",
   ctas: [
-    { label: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true },
-    { label: "GitHub", href: "#" },
-    { label: "LinkedIn", href: "#" },
+    { label: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true, newTab: true },
+    { label: "GitHub", href: "https://github.com/JunRong19", newTab: true },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/tan-jun-rong/", newTab: true },
   ],
 };
 
@@ -63,9 +73,11 @@ export const hero = {
 export const experiences = [
   {
     id: "exp-1",
-    company: "Company Placeholder",
-    role: "Software Engineer Intern",
+    company: "Razer Inc.",
+    role: "Software Engineer",
     period: "2025 - Present",
+    logo: "/images/Razer-logo.png",
+    logoAlt: "Razer logo",
     impactBullets: [
       "Built QA workflow automation for hardware validation.",
       "Reduced manual test effort with internal scripts.",
@@ -74,9 +86,11 @@ export const experiences = [
   },
   {
     id: "exp-2",
-    company: "Company Placeholder",
+    company: "Fiverr",
     role: "Game QA Analyst",
     period: "2023 - 2025",
+    logo: "/images/Fiverr-Logo.png",
+    logoAlt: "Fiverr logo",
     impactBullets: [
       "Delivered reproducible bug reports with priority context.",
       "Validated gameplay and performance across releases.",
@@ -85,9 +99,11 @@ export const experiences = [
   },
   {
     id: "exp-3",
-    company: "Company Placeholder",
-    role: "Game Programmer Intern",
+    company: "The Kettle Gourmet",
+    role: "Game Programmer",
     period: "2019 - 2020",
+    logo: "/images/TKG-Logo.png",
+    logoAlt: "TKG logo",
     impactBullets: [
       "Implemented production features in Unity.",
       "Supported Android and iOS release readiness.",
@@ -142,11 +158,15 @@ export const projects = [
 ];
 
 /** @type {ContactItem[]} */
+export const quickContacts = [
+  { id: "email", label: "Email", value: "Tanjunrong321@gmail.com", href: "mailto:Tanjunrong321@gmail.com" },
+];
+
+/** @type {ContactItem[]} */
 export const contacts = [
-  { id: "email", label: "Email", value: "your-email@domain.com", href: "mailto:your-email@domain.com" },
-  { id: "phone", label: "Phone", value: "+65 0000 0000", href: "tel:+6500000000" },
-  { id: "github", label: "GitHub", value: "github.com/your-handle", href: "https://github.com" },
-  { id: "linkedin", label: "LinkedIn", value: "linkedin.com/in/your-handle", href: "https://linkedin.com" },
+  { id: "email", label: "Email", value: "Tanjunrong321@gmail.com", href: "mailto:Tanjunrong321@gmail.com" },
+  { id: "github", label: "GitHub", value: "github.com/JunRong19", href: "https://github.com/JunRong19" },
+  { id: "linkedin", label: "LinkedIn", value: "linkedin.com/in/tan-jun-rong/", href: "https://www.linkedin.com/in/tan-jun-rong/" },
 ];
 
 /** @type {CursorTrailConfig} */

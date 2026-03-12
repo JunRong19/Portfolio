@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { contacts, cursorTrailConfig, experiences, hero, navItems, projects } from "./data/content";
+import { contacts, cursorTrailConfig, experiences, hero, navItems, projects, quickContacts } from "./data/content";
 import { useCursorTrail } from "./hooks/useCursorTrail";
 import { useReveal } from "./hooks/useReveal";
 import { useTheme } from "./hooks/useTheme";
 import "./styles.css";
 
 function App() {
-  const BASE_CUBE_SHELL_HEIGHT = 560;
+  const BASE_CUBE_SHELL_HEIGHT = 500;
   const DETAIL_HEIGHT_DELTA = 96;
+  const CUBE_VIEWPORT_GUTTER = 16;
   const { theme, toggleTheme } = useTheme("dark");
   const initialProjectId = projects[0]?.id ?? "";
   const [expandedProject, setExpandedProject] = useState("");
@@ -24,6 +25,9 @@ function App() {
   const [pendingProjectId, setPendingProjectId] = useState("");
   const [showSettleFeedback, setShowSettleFeedback] = useState(false);
   const trailLayerRef = useRef(null);
+  const leftColumnRef = useRef(null);
+  const leftRailRef = useRef(null);
+  const cubeStageRef = useRef(null);
   const cubeShellRef = useRef(null);
   const profileProbeRef = useRef(null);
   const detailProbeRefs = useRef({});
@@ -34,6 +38,7 @@ function App() {
   const [cubeDepth, setCubeDepth] = useState(260);
   const [profileShellHeight, setProfileShellHeight] = useState(BASE_CUBE_SHELL_HEIGHT);
   const [detailShellHeight, setDetailShellHeight] = useState(BASE_CUBE_SHELL_HEIGHT + DETAIL_HEIGHT_DELTA);
+  const [maxCubeViewportHeight, setMaxCubeViewportHeight] = useState(null);
   const CUBE_TRANSITION_MS = 520;
   const SNAP_TICK_MS = 34;
   const SETTLE_FEEDBACK_MS = 620;
@@ -56,15 +61,36 @@ function App() {
   const showProfileFront = leftPanelMode === "profile" || cubePhase === "rotating";
   const isCubeInteractive = cubePhase === "idle";
   const isExpandedHeight = cubePhase !== "returning" && leftPanelMode === "projectDetail";
-  const resolvedShellHeight = isExpandedHeight ? detailShellHeight : profileShellHeight;
+  const shouldReserveExpandedBottom = leftPanelMode === "projectDetail";
+  const desiredCubeHeight = isExpandedHeight ? detailShellHeight : profileShellHeight;
+  const collapsedRenderedHeight = maxCubeViewportHeight != null
+    ? Math.min(profileShellHeight, maxCubeViewportHeight)
+    : profileShellHeight;
+  const expandedRenderedHeight = maxCubeViewportHeight != null
+    ? Math.min(desiredCubeHeight, maxCubeViewportHeight)
+    : desiredCubeHeight;
+  const expandedBottomReserve = shouldReserveExpandedBottom
+    ? Math.max(0, detailShellHeight - profileShellHeight + CUBE_VIEWPORT_GUTTER)
+    : 0;
+  const cubeContentScale = desiredCubeHeight > 0
+    ? Math.max(expandedRenderedHeight / desiredCubeHeight, 0.001)
+    : 1;
+  const cubeStageStyle = {
+    "--cube-anchor-height": `${collapsedRenderedHeight}px`,
+  };
   const cubeShellStyle = {
-    "--cube-shell-height": `${resolvedShellHeight}px`,
+    "--cube-shell-height": `${expandedRenderedHeight}px`,
+    "--cube-transition-ms": `${CUBE_TRANSITION_MS}ms`,
+  };
+  const cubeSpacerStyle = {
+    "--cube-bottom-reserve": `${expandedBottomReserve}px`,
     "--cube-transition-ms": `${CUBE_TRANSITION_MS}ms`,
   };
   const cubeSceneStyle = {
     "--cube-angle": `${cubeAngle}deg`,
     "--cube-depth": `${cubeDepth}px`,
-    "--cube-shell-height": `${resolvedShellHeight}px`,
+    "--cube-content-scale": `${cubeContentScale}`,
+    "--cube-shell-height": `${expandedRenderedHeight}px`,
     "--cube-settle-ms": `${SETTLE_FEEDBACK_MS}ms`,
     "--cube-transition-ms": `${CUBE_TRANSITION_MS}ms`,
   };
@@ -211,33 +237,47 @@ function App() {
     runResetCube();
   };
 
-  const renderProfileFace = (keyPrefix) => (
-    <div className="cube-face-inner cube-face-profile">
+  const renderFaceContent = (className, children) => (
+    <div className="cube-face-scale">
+      <div className={`cube-face-inner ${className}`}>
+        {children}
+      </div>
+    </div>
+  );
+
+  const renderProfileFace = (keyPrefix) => renderFaceContent("cube-face-profile", (
+    <>
       <p className="eyebrow">{hero.eyebrow}</p>
       <h1>{hero.headline}</h1>
       <p className="hero-copy">{hero.subheadline}</p>
 
       <div className="cta-row">
         {hero.ctas.map((cta) => (
-          <a key={`${keyPrefix}-${cta.label}`} className={`text-link ${cta.primary ? "strong" : ""}`} href={cta.href}>
+          <a
+            key={`${keyPrefix}-${cta.label}`}
+            className={`text-link ${cta.primary ? "strong" : ""}`}
+            href={cta.href}
+            target={cta.newTab ? "_blank" : undefined}
+            rel={cta.newTab ? "noreferrer" : undefined}
+          >
             {cta.label}
           </a>
         ))}
       </div>
 
       <div className="quick-links" aria-label="Quick contact links">
-        {contacts.map((item) => (
+        {quickContacts.map((item) => (
           <a key={`${keyPrefix}-${item.id}`} className="quick-link" href={item.href}>
             <span>{item.label}</span>
             <span>{item.value}</span>
           </a>
         ))}
       </div>
-    </div>
-  );
+    </>
+  ));
 
-  const renderProjectFace = (project, keyPrefix) => (
-    <div className="cube-face-inner cube-face-detail">
+  const renderProjectFace = (project, keyPrefix) => renderFaceContent("cube-face-detail", (
+    <>
       <p className="eyebrow">Project Detail</p>
       <h2 className="panel-title">{project.title}</h2>
       <p className="meta">
@@ -272,8 +312,8 @@ function App() {
       >
         Back
       </button>
-    </div>
-  );
+    </>
+  ));
 
   useReveal();
   useCursorTrail(trailLayerRef, cursorTrailConfig);
@@ -343,6 +383,66 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const stageNode = cubeStageRef.current;
+    const railNode = leftRailRef.current;
+    const columnNode = leftColumnRef.current;
+    if (!stageNode || !railNode || !columnNode || typeof window === "undefined") {
+      return undefined;
+    }
+
+    let frameId = 0;
+
+    const updateViewportCap = () => {
+      frameId = 0;
+      const railStyles = window.getComputedStyle(railNode);
+      const paddingBottom = Number.parseFloat(railStyles.paddingBottom) || 0;
+      const currentTop = stageNode.getBoundingClientRect().top;
+      const layoutBottom = columnNode.getBoundingClientRect().bottom;
+      const viewportLimit = window.innerHeight - currentTop - CUBE_VIEWPORT_GUTTER;
+      const containerLimit = layoutBottom - paddingBottom - currentTop - CUBE_VIEWPORT_GUTTER;
+      const nextMaxHeight = Math.max(
+        1,
+        Math.floor(Math.min(viewportLimit, containerLimit)),
+      );
+
+      setMaxCubeViewportHeight((previous) => (
+        previous === nextMaxHeight ? previous : nextMaxHeight
+      ));
+    };
+
+    const requestViewportCapUpdate = () => {
+      if (frameId) {
+        return;
+      }
+      frameId = window.requestAnimationFrame(updateViewportCap);
+    };
+
+    updateViewportCap();
+
+    let resizeObserver;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => {
+        requestViewportCapUpdate();
+      });
+      resizeObserver.observe(railNode);
+      resizeObserver.observe(columnNode);
+      resizeObserver.observe(stageNode);
+    }
+
+    window.addEventListener("resize", requestViewportCapUpdate);
+    window.addEventListener("scroll", requestViewportCapUpdate, { passive: true });
+
+    return () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+      }
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", requestViewportCapUpdate);
+      window.removeEventListener("scroll", requestViewportCapUpdate);
+    };
+  }, [desiredCubeHeight, isExpandedHeight]);
+
+  useEffect(() => {
     if (cubePhase !== "idle" || leftPanelMode !== "projectDetail" || cubeBusyRef.current || !queuedResetRef.current) {
       return;
     }
@@ -391,71 +491,80 @@ function App() {
       </header>
 
       <main id="main-content" className="layout-grid">
-        <aside id="hero" className="left-rail">
-          <div
-            ref={cubeShellRef}
-            className={`cube-shell phase-${cubePhase}`}
-            style={cubeShellStyle}
-          >
+        <div ref={leftColumnRef} className="left-column">
+          <aside ref={leftRailRef} id="hero" className="left-rail">
             <div
-              className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""} phase-${cubePhase}`}
-              style={cubeSceneStyle}
-              data-pending={pendingProjectId ? "true" : "false"}
+              ref={cubeStageRef}
+              className="cube-stage"
+              style={cubeStageStyle}
             >
               <div
-                className="cube-face cube-front"
-                data-visible={visibleFaceIndex === 0 ? "true" : "false"}
-                data-mobile-visible={mobileVisibleFaceIndex === 0 ? "true" : "false"}
+                ref={cubeShellRef}
+                className={`cube-shell phase-${cubePhase}`}
+                style={cubeShellStyle}
               >
-                {showSettleFeedback && cubePhase === "idle" ? (
-                  <div className="cube-face-feedback" aria-hidden="true">
-                    <span className="cube-face-feedback-branch cube-face-feedback-branch-top-right" />
-                    <span className="cube-face-feedback-branch cube-face-feedback-branch-left-bottom" />
-                  </div>
-                ) : null}
-                {showProfileFront ? renderProfileFace("front-profile") : renderProjectFace(frontDetailProject, "front-detail")}
-              </div>
-
-              {[1, 2, 3].map((faceIndex) => {
-                const faceProject = getProjectById(faceProjectMap[faceIndex]);
-                const faceClass = faceIndex === 1 ? "cube-right" : faceIndex === 2 ? "cube-back" : "cube-left";
-                const showProfileFace = faceIndex === 1 && cubePhase === "returning";
-                return (
-                  <div
-                    className={`cube-face ${faceClass}`}
-                    key={faceClass}
-                    data-visible={visibleFaceIndex === faceIndex ? "true" : "false"}
-                    data-mobile-visible={mobileVisibleFaceIndex === faceIndex ? "true" : "false"}
-                    aria-live={visibleFaceIndex === faceIndex ? "polite" : "off"}
-                  >
-                    {showProfileFace ? renderProfileFace(`${faceClass}-profile`) : renderProjectFace(faceProject, `${faceClass}-detail`)}
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="cube-measurements" aria-hidden="true">
-              <div ref={profileProbeRef} className="cube-measure-probe cube-measure-probe-profile">
-                {renderProfileFace("measure-profile")}
-              </div>
-              {projects.map((project) => (
                 <div
-                  key={`measure-${project.id}`}
-                  ref={(node) => {
-                    if (node) {
-                      detailProbeRefs.current[project.id] = node;
-                      return;
-                    }
-                    delete detailProbeRefs.current[project.id];
-                  }}
-                  className="cube-measure-probe cube-measure-probe-detail"
+                  className={`cube-scene ${leftPanelMode === "projectDetail" ? "is-rotated" : ""} phase-${cubePhase}`}
+                  style={cubeSceneStyle}
+                  data-pending={pendingProjectId ? "true" : "false"}
                 >
-                  {renderProjectFace(project, `measure-${project.id}`)}
+                  <div
+                    className="cube-face cube-front"
+                    data-visible={visibleFaceIndex === 0 ? "true" : "false"}
+                    data-mobile-visible={mobileVisibleFaceIndex === 0 ? "true" : "false"}
+                  >
+                    {showSettleFeedback && cubePhase === "idle" ? (
+                      <div className="cube-face-feedback" aria-hidden="true">
+                        <span className="cube-face-feedback-branch cube-face-feedback-branch-top-right" />
+                        <span className="cube-face-feedback-branch cube-face-feedback-branch-left-bottom" />
+                      </div>
+                    ) : null}
+                    {showProfileFront ? renderProfileFace("front-profile") : renderProjectFace(frontDetailProject, "front-detail")}
+                  </div>
+
+                  {[1, 2, 3].map((faceIndex) => {
+                    const faceProject = getProjectById(faceProjectMap[faceIndex]);
+                    const faceClass = faceIndex === 1 ? "cube-right" : faceIndex === 2 ? "cube-back" : "cube-left";
+                    const showProfileFace = faceIndex === 1 && cubePhase === "returning";
+                    return (
+                      <div
+                        className={`cube-face ${faceClass}`}
+                        key={faceClass}
+                        data-visible={visibleFaceIndex === faceIndex ? "true" : "false"}
+                        data-mobile-visible={mobileVisibleFaceIndex === faceIndex ? "true" : "false"}
+                        aria-live={visibleFaceIndex === faceIndex ? "polite" : "off"}
+                      >
+                        {showProfileFace ? renderProfileFace(`${faceClass}-profile`) : renderProjectFace(faceProject, `${faceClass}-detail`)}
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
+              </div>
+
+              <div className="cube-measurements" aria-hidden="true">
+                <div ref={profileProbeRef} className="cube-measure-probe cube-measure-probe-profile">
+                  {renderProfileFace("measure-profile")}
+                </div>
+                {projects.map((project) => (
+                  <div
+                    key={`measure-${project.id}`}
+                    ref={(node) => {
+                      if (node) {
+                        detailProbeRefs.current[project.id] = node;
+                        return;
+                      }
+                      delete detailProbeRefs.current[project.id];
+                    }}
+                    className="cube-measure-probe cube-measure-probe-detail"
+                  >
+                    {renderProjectFace(project, `measure-${project.id}`)}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </aside>
+          </aside>
+          <div className="cube-stage-spacer" style={cubeSpacerStyle} aria-hidden="true" />
+        </div>
 
         <div className="right-flow">
           <section id="experience" className="section" data-reveal>
@@ -465,11 +574,22 @@ function App() {
               {experiences.map((item) => (
                 <article key={item.id} className="timeline-item">
                   <div className="timeline-top">
-                    <div>
+                    <div className="timeline-copy">
                       <h3 className="timeline-role">{item.role}</h3>
                       <p className="timeline-company">{item.company}</p>
                     </div>
-                    <span className="timeline-period">{item.period}</span>
+                    <div className="timeline-meta">
+                      <span className="timeline-period">{item.period}</span>
+                      {item.logo ? (
+                        <div className="timeline-logo-wrap">
+                          <img
+                            className="timeline-logo"
+                            src={resolvePublicAsset(item.logo)}
+                            alt={item.logoAlt ?? `${item.company} logo`}
+                          />
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                   <ul className="simple-list">
                     {item.impactBullets.map((point) => (
@@ -537,7 +657,13 @@ function App() {
             <h2>Open to opportunities</h2>
             <div className="contact-list">
               {contacts.map((item) => (
-                <a key={item.id} className="contact-row" href={item.href}>
+                <a
+                  key={item.id}
+                  className="contact-row"
+                  href={item.href}
+                  target={item.id === "email" ? undefined : "_blank"}
+                  rel={item.id === "email" ? undefined : "noreferrer"}
+                >
                   <span>{item.label}</span>
                   <span>{item.value}</span>
                 </a>
