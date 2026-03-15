@@ -60,7 +60,7 @@ export const navItems = [
 
 export const hero = {
   eyebrow: "Software Developer",
-  headline: "Hello!",
+  headline: "Hello,I'm",
   subheadline: "I build software, tools and games, specializing in C#, C++, and Python.",
   ctas: [
     { label: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true, newTab: true },
@@ -123,8 +123,8 @@ export const experiences = [
   {
     id: "exp-1",
     company: "Razer Inc.",
-    role: "Software Engineer",
-    period: "2025 - Present",
+    role: "Software Engineer Internship",
+    period: "2025 - 2026",
     logo: "/images/Razer-logo.png",
     logoAlt: "Razer logo",
     impactBullets: [
@@ -141,7 +141,7 @@ export const experiences = [
     logo: "/images/Fiverr-Logo.png",
     logoAlt: "Fiverr logo",
     impactBullets: [
-      "Achieved 100% 5-star ratings across 30+ completed client projects.",
+      "Achieved 5-star ratings across 30+ completed client projects.",
       "Delivered tailored QA solutions for clients globally.",
       "Analyzed and documented cross-platform game issues.",
     ],
@@ -169,7 +169,7 @@ export const projects = [
     role: "Tools Programmer",
     period: "8 months",
     summary: "Objective placeholder: define the core delivery goal and measurable success metric.",
-    image: "/images/temp.jpg",
+    // image: "/images/temp.jpg",
     imageAlt: "Project detail visual for Project Placeholder One.",
     stack: ["C#", "Unity", "Tooling"],
     impactBullets: [

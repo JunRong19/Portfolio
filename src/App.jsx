@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { contacts, cursorTrailConfig, education, expertise, experiences, hero, navItems, projects, quickContacts } from "./data/content";
 import { useCursorTrail } from "./hooks/useCursorTrail";
 import { useReveal } from "./hooks/useReveal";
@@ -63,18 +63,14 @@ function App() {
   const isExpandedHeight = cubePhase !== "returning" && leftPanelMode === "projectDetail";
   const shouldReserveExpandedBottom = leftPanelMode === "projectDetail";
   const desiredCubeHeight = isExpandedHeight ? detailShellHeight : profileShellHeight;
-  const collapsedRenderedHeight = maxCubeViewportHeight != null
-    ? Math.min(profileShellHeight, maxCubeViewportHeight)
-    : profileShellHeight;
-  const expandedRenderedHeight = maxCubeViewportHeight != null
+  const collapsedRenderedHeight = profileShellHeight;
+  const expandedRenderedHeight = isExpandedHeight && maxCubeViewportHeight != null
     ? Math.min(desiredCubeHeight, maxCubeViewportHeight)
     : desiredCubeHeight;
   const expandedBottomReserve = shouldReserveExpandedBottom
     ? Math.max(0, detailShellHeight - profileShellHeight + CUBE_VIEWPORT_GUTTER)
     : 0;
-  const cubeContentScale = desiredCubeHeight > 0
-    ? Math.max(expandedRenderedHeight / desiredCubeHeight, 0.001)
-    : 1;
+  const cubeContentScale = 1;
   const cubeStageStyle = {
     "--cube-anchor-height": `${collapsedRenderedHeight}px`,
   };
@@ -249,12 +245,12 @@ function App() {
     <>
       {/* <p className="eyebrow">{hero.eyebrow}</p> */}
       <div className="hero-header">
-        <h1 className="headline">
-          <span className="headline-line">
-            {hero.headline}
+                <h1 className="headline">
+          <span className="headline-line">Hello, I&apos;m</span>
+          <span className="headline-sub">
+            JUN RONG
             <span className="wave-emoji" aria-hidden="true">{"\u{1F44B}"}</span>
           </span>
-          <span className="headline-sub">I'm Jun Rong</span>
         </h1>
         {/* <img
           className="hero-face"
@@ -293,7 +289,7 @@ function App() {
               <span className="education-period">{item.period}</span>
             </div>
             <p className="education-program">{item.program}</p>
-            <p className="education-score">{item.cgpa}</p>
+            {/* <p className="education-score">{item.cgpa}</p> */}
           </div>
         ))}
       </div>
@@ -373,6 +369,16 @@ function App() {
   useReveal();
   useCursorTrail(trailLayerRef, cursorTrailConfig);
 
+  const emphasizeNumbers = (text) => {
+    const tokenRegex = /(\d+(?:\.\d+)?(?:%|\+)?)(?!-star)/g;
+    const isNumberToken = /^\d+(?:\.\d+)?(?:%|\+)?$/;
+    return text.split(tokenRegex).map((part, index) => (
+      isNumberToken.test(part)
+        ? <span className="stat" key={`${text}-${index}`}>{part}</span>
+        : part
+    ));
+  };
+
   useEffect(() => {
     const profileNode = profileProbeRef.current;
     const detailNodes = projects
@@ -438,26 +444,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const stageNode = cubeStageRef.current;
     const railNode = leftRailRef.current;
-    const columnNode = leftColumnRef.current;
-    if (!stageNode || !railNode || !columnNode || typeof window === "undefined") {
+    if (!railNode || typeof window === "undefined") {
       return undefined;
     }
 
-    let frameId = 0;
-
     const updateViewportCap = () => {
-      frameId = 0;
       const railStyles = window.getComputedStyle(railNode);
-      const paddingBottom = Number.parseFloat(railStyles.paddingBottom) || 0;
-      const currentTop = stageNode.getBoundingClientRect().top;
-      const layoutBottom = columnNode.getBoundingClientRect().bottom;
-      const viewportLimit = window.innerHeight - currentTop - CUBE_VIEWPORT_GUTTER;
-      const containerLimit = layoutBottom - paddingBottom - currentTop - CUBE_VIEWPORT_GUTTER;
+      const railTop = Number.parseFloat(railStyles.top) || 0;
       const nextMaxHeight = Math.max(
         1,
-        Math.floor(Math.min(viewportLimit, containerLimit)),
+        Math.floor(window.innerHeight - railTop - CUBE_VIEWPORT_GUTTER),
       );
 
       setMaxCubeViewportHeight((previous) => (
@@ -465,37 +462,13 @@ function App() {
       ));
     };
 
-    const requestViewportCapUpdate = () => {
-      if (frameId) {
-        return;
-      }
-      frameId = window.requestAnimationFrame(updateViewportCap);
-    };
-
     updateViewportCap();
+    window.addEventListener("resize", updateViewportCap);
 
-    let resizeObserver;
-    if (typeof ResizeObserver !== "undefined") {
-      resizeObserver = new ResizeObserver(() => {
-        requestViewportCapUpdate();
-      });
-      resizeObserver.observe(railNode);
-      resizeObserver.observe(columnNode);
-      resizeObserver.observe(stageNode);
-    }
+    return () => window.removeEventListener("resize", updateViewportCap);
+  }, []);
 
-    window.addEventListener("resize", requestViewportCapUpdate);
-    window.addEventListener("scroll", requestViewportCapUpdate, { passive: true });
-
-    return () => {
-      if (frameId) {
-        window.cancelAnimationFrame(frameId);
-      }
-      resizeObserver?.disconnect();
-      window.removeEventListener("resize", requestViewportCapUpdate);
-      window.removeEventListener("scroll", requestViewportCapUpdate);
-    };
-  }, [desiredCubeHeight, isExpandedHeight]);
+  // Intentionally no viewport cap: the left box should not resize while scrolling.
 
   useEffect(() => {
     if (cubePhase !== "idle" || leftPanelMode !== "projectDetail" || cubeBusyRef.current || !queuedResetRef.current) {
@@ -648,7 +621,7 @@ function App() {
                   </div>
                   <ul className="simple-list">
                     {item.impactBullets.map((point) => (
-                      <li key={point}>{point}</li>
+                      <li key={point}>{emphasizeNumbers(point)}</li>
                     ))}
                   </ul>
                 </article>
@@ -733,3 +706,4 @@ function App() {
 }
 
 export default App;
+
