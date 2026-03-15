@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { contacts, cursorTrailConfig, experiences, hero, navItems, projects, quickContacts } from "./data/content";
+import { contacts, cursorTrailConfig, education, expertise, experiences, hero, navItems, projects, quickContacts } from "./data/content";
 import { useCursorTrail } from "./hooks/useCursorTrail";
 import { useReveal } from "./hooks/useReveal";
 import { useTheme } from "./hooks/useTheme";
@@ -247,32 +247,87 @@ function App() {
 
   const renderProfileFace = (keyPrefix) => renderFaceContent("cube-face-profile", (
     <>
-      <p className="eyebrow">{hero.eyebrow}</p>
-      <h1>{hero.headline}</h1>
+      {/* <p className="eyebrow">{hero.eyebrow}</p> */}
+      <div className="hero-header">
+        <h1 className="headline">
+          <span className="headline-line">
+            {hero.headline}
+            <span className="wave-emoji" aria-hidden="true">{"\u{1F44B}"}</span>
+          </span>
+          <span className="headline-sub">I'm Jun Rong</span>
+        </h1>
+        {/* <img
+          className="hero-face"
+          src={resolvePublicAsset("/images/Face.png")}
+          alt="Portrait"
+        /> */}
+      </div>
+
       <p className="hero-copy">{hero.subheadline}</p>
 
-      <div className="cta-row">
-        {hero.ctas.map((cta) => (
-          <a
-            key={`${keyPrefix}-${cta.label}`}
-            className={`text-link ${cta.primary ? "strong" : ""}`}
-            href={cta.href}
-            target={cta.newTab ? "_blank" : undefined}
-            rel={cta.newTab ? "noreferrer" : undefined}
-          >
-            {cta.label}
-          </a>
+      <div className="hero-contacts" aria-label="Contact links">
+        {quickContacts.map((item, index) => (
+          <span key={`${keyPrefix}-${item.id}`} className="hero-contact-item">
+            <a
+              className={`contact-row ${item.id === "resume" ? "is-resume" : ""}`}
+              href={item.href}
+              target={item.id === "email" ? undefined : "_blank"}
+              rel={item.id === "email" ? undefined : "noreferrer"}
+            >
+              <span>{item.label}</span>
+            </a>
+            {item.id !== "resume" && index < quickContacts.length - 1 ? (
+              <span className="hero-contact-sep" aria-hidden="true">|</span>
+            ) : null}
+          </span>
         ))}
       </div>
 
-      <div className="quick-links" aria-label="Quick contact links">
-        {quickContacts.map((item) => (
-          <a key={`${keyPrefix}-${item.id}`} className="quick-link" href={item.href}>
-            <span>{item.label}</span>
-            <span>{item.value}</span>
-          </a>
+
+      <p className="section-kicker education-kicker">Education</p>
+      <div className="education-list" aria-label="Education">
+        {education.map((item) => (
+          <div key={item.id} className="education-item">
+            <div className="education-head">
+              <span className="education-school">{item.school}</span>
+              <span className="education-period">{item.period}</span>
+            </div>
+            <p className="education-program">{item.program}</p>
+            <p className="education-score">{item.cgpa}</p>
+          </div>
         ))}
       </div>
+
+      <p className="section-kicker expertise-kicker">Expertise</p>
+      <div className="expertise-list" aria-label="Expertise">
+        {expertise.map((group) => (
+          <div key={group.id} className="expertise-group">
+            <div className="expertise-title">{group.title}</div>
+              <div className="expertise-tags">
+                {group.items.map((item) => (
+                  <span
+                    key={`${group.id}-${item.label}`}
+                    className="expertise-tag"
+                  >
+                    <img
+                      className="expertise-icon"
+                      src={resolvePublicAsset(item.icon)}
+                      alt={`${item.label} logo`}
+                      loading="lazy"
+                    />
+                  </span>
+                ))}
+              </div>
+            </div>
+        ))}
+      </div>
+
+
+
+      <p className="hero-itch">
+        Looking for more? Check out my game projects <a className="hero-itch-link" href="https://kyahiax.itch.io/" target="_blank" rel="noreferrer">here</a>!
+      </p>
+
     </>
   ));
 
@@ -472,13 +527,13 @@ function App() {
 
       <header className="site-header">
         <p className="brand-line">Tan Jun Rong / Software Developer</p>
-        <nav className="site-nav" aria-label="Primary">
+        {/* <nav className="site-nav" aria-label="Primary">
           {navItems.map((item) => (
             <a key={item.id} href={`#${item.id}`}>
               {item.label}
             </a>
           ))}
-        </nav>
+        </nav> */}
         <button
           type="button"
           className="theme-toggle"
@@ -569,7 +624,7 @@ function App() {
         <div className="right-flow">
           <section id="experience" className="section" data-reveal>
             <p className="section-kicker">Experience</p>
-            <h2>Recent roles and outcomes</h2>
+            {/* <h2>Recent roles and outcomes</h2> */}
             <div className="timeline">
               {experiences.map((item) => (
                 <article key={item.id} className="timeline-item">
@@ -601,9 +656,9 @@ function App() {
             </div>
           </section>
 
-          <section id="projects" className="section" data-reveal>
-            <p className="section-kicker">Projects</p>
-            <h2>Selected technical work</h2>
+          <section id="projects" className="section">
+            <p className="section-kicker">Featured Projects</p>
+            {/* <h2>Selected technical work</h2> */}
             <div className="projects-grid">
               {projects.map((project) => {
                 const expanded = expandedProject === project.id;
@@ -628,9 +683,9 @@ function App() {
                       ))}
                     </div>
 
-                    <div className="project-placeholder" aria-hidden="true">
+                    {/* <div className="project-placeholder" aria-hidden="true">
                       Project Visual Placeholder
-                    </div>
+                    </div> */}
 
                     <button
                       type="button"
@@ -653,20 +708,21 @@ function App() {
           </section>
 
           <section id="contact" className="section" data-reveal>
-            <p className="section-kicker">Contact</p>
-            <h2>Open to opportunities</h2>
+            <p className="section-kicker">Open To Opportunities</p>
+            {/* <h2>Open to opportunities</h2> */}
             <div className="contact-list">
               {contacts.map((item) => (
-                <a
-                  key={item.id}
-                  className="contact-row"
-                  href={item.href}
-                  target={item.id === "email" ? undefined : "_blank"}
-                  rel={item.id === "email" ? undefined : "noreferrer"}
-                >
+                <div key={item.id} className="contact-row">
                   <span>{item.label}</span>
-                  <span>{item.value}</span>
-                </a>
+                  <a
+                    className="contact-link"
+                    href={item.href}
+                    target={item.id === "email" ? undefined : "_blank"}
+                    rel={item.id === "email" ? undefined : "noreferrer"}
+                  >
+                    {item.value}
+                  </a>
+                </div>
               ))}
             </div>
           </section>

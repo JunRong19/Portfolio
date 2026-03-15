@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @typedef {"dark" | "light"} ThemeMode
  */
 
@@ -61,13 +61,62 @@ export const navItems = [
 export const hero = {
   eyebrow: "Software Developer",
   headline: "Hello!",
-  subheadline: "I build game tech, QA automation, and internal tools with measurable delivery impact.",
+  subheadline: "I build software, tools and games, specializing in C#, C++, and Python.",
   ctas: [
     { label: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true, newTab: true },
     { label: "GitHub", href: "https://github.com/JunRong19", newTab: true },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/tan-jun-rong/", newTab: true },
+    { label: "Email", href: "mailto:tan.jun.rong@gmail.com", newTab: false },
   ],
 };
+
+export const education = [
+  {
+    id: "edu-1",
+    school: "Singapore Institute of Technology - Digipen",
+    period: "2022 - 2026",
+    program: "BSc in Computer Science in Interactive Media and Game Development",
+    cgpa: "CGPA: 4.02 / 5.00",
+  },
+  {
+    id: "edu-2",
+    school: "Temasek Polytechnic",
+    period: "2017 - 2020",
+    program: "Diploma in Game Design and Development",
+    cgpa: "CGPA: 3.76 / 4.00",
+  },
+];
+
+export const expertise = [
+  {
+    id: "exp-languages",
+    title: "Languages",
+    items: [
+      { label: "C", icon: "/images/c.svg" },
+      { label: "C++", icon: "/images/cpp.svg" },
+      { label: "C#", icon: "/images/csharp.svg" },
+      // { label: "JavaScript", icon: "/images/js.svg" },
+      { label: "Python", icon: "/images/python.svg" },
+    ],
+  },
+  {
+    id: "exp-devops",
+    title: "DevOps",
+    items: [
+      { label: "Selenium", icon: "/images/selenium.svg" },
+      { label: "Jenkins", icon: "/images/jenkins.svg" },
+      { label: "Robot Framework", icon: "/images/robotframework.svg" },
+    ],
+  },
+  {
+    id: "exp-software",
+    title: "Software",
+    items: [
+      { label: "Unity", icon: "/images/unity.svg" },
+      { label: "Blender", icon: "/images/blender.svg" },
+    ],
+  },
+];
 
 /** @type {ExperienceItem[]} */
 export const experiences = [
@@ -79,9 +128,9 @@ export const experiences = [
     logo: "/images/Razer-logo.png",
     logoAlt: "Razer logo",
     impactBullets: [
-      "Built QA workflow automation for hardware validation.",
-      "Reduced manual test effort with internal scripts.",
-      "Improved reliability and reporting across test runs.",
+      "Developed and maintained automated test cases for Razer peripherals, achieving 90% test coverage.",
+      "Built a physical testing rig supporting end-to-end automation, reducing manual testing time by 60%.",
+      "Created 4 internal automation tools to automate tasks and improve team workflow efficiency.",
     ],
   },
   {
@@ -92,22 +141,22 @@ export const experiences = [
     logo: "/images/Fiverr-Logo.png",
     logoAlt: "Fiverr logo",
     impactBullets: [
-      "Delivered reproducible bug reports with priority context.",
-      "Validated gameplay and performance across releases.",
-      "Maintained rapid feedback loops with development teams.",
+      "Achieved 100% 5-star ratings across 30+ completed client projects.",
+      "Delivered tailored QA solutions for clients globally.",
+      "Analyzed and documented cross-platform game issues.",
     ],
   },
   {
     id: "exp-3",
     company: "The Kettle Gourmet",
-    role: "Game Programmer",
+    role: "Game Programmer / 3D Artist",
     period: "2019 - 2020",
     logo: "/images/TKG-Logo.png",
     logoAlt: "TKG logo",
     impactBullets: [
-      "Implemented production features in Unity.",
-      "Supported Android and iOS release readiness.",
-      "Contributed to iterative sprint delivery.",
+      "Developed 3 mobile applications across Android and iOS platforms.",
+      "Optimized performance by 70% and ensured cross-device compatibility.",
+      "Participated in weekly sprint meetings to align development with business goals and user feedback.",
     ],
   },
 ];
@@ -159,13 +208,15 @@ export const projects = [
 
 /** @type {ContactItem[]} */
 export const quickContacts = [
+  { id: "resume", label: "Resume", value: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf" },
+  { id: "github", label: "GitHub", value: "github.com/JunRong19", href: "https://github.com/JunRong19" },
   { id: "email", label: "Email", value: "Tanjunrong321@gmail.com", href: "mailto:Tanjunrong321@gmail.com" },
+  { id: "linkedin", label: "LinkedIn", value: "linkedin.com/in/tan-jun-rong/", href: "https://www.linkedin.com/in/tan-jun-rong/" },
 ];
 
 /** @type {ContactItem[]} */
 export const contacts = [
   { id: "email", label: "Email", value: "Tanjunrong321@gmail.com", href: "mailto:Tanjunrong321@gmail.com" },
-  { id: "github", label: "GitHub", value: "github.com/JunRong19", href: "https://github.com/JunRong19" },
   { id: "linkedin", label: "LinkedIn", value: "linkedin.com/in/tan-jun-rong/", href: "https://www.linkedin.com/in/tan-jun-rong/" },
 ];
 
@@ -176,3 +227,4 @@ export const cursorTrailConfig = {
   spawnIntervalMs: 20,
   dotSizeRange: [2, 7],
 };
+
