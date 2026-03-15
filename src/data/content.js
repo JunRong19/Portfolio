@@ -61,7 +61,7 @@ export const navItems = [
 export const hero = {
   eyebrow: "Software Developer",
   headline: "Hello,I'm",
-  subheadline: "I build software, tools and games, specializing in C#, C++, and Python.",
+  subheadline: "I'm a final-year computer science student, graduting in 2026.",
   ctas: [
     { label: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true, newTab: true },
     { label: "GitHub", href: "https://github.com/JunRong19", newTab: true },
