@@ -272,7 +272,7 @@ function App() {
             >
               <span>{item.label}</span>
             </a>
-            {item.id !== "resume" && index < quickContacts.length - 1 ? (
+            {index < quickContacts.length - 1 ? (
               <span className="hero-contact-sep" aria-hidden="true">|</span>
             ) : null}
           </span>
@@ -595,39 +595,7 @@ function App() {
         </div>
 
         <div className="right-flow">
-          <section id="experience" className="section" data-reveal>
-            <p className="section-kicker">Experience</p>
-            {/* <h2>Recent roles and outcomes</h2> */}
-            <div className="timeline">
-              {experiences.map((item) => (
-                <article key={item.id} className="timeline-item">
-                  <div className="timeline-top">
-                    <div className="timeline-copy">
-                      <h3 className="timeline-role">{item.role}</h3>
-                      <p className="timeline-company">{item.company}</p>
-                    </div>
-                    <div className="timeline-meta">
-                      <span className="timeline-period">{item.period}</span>
-                      {item.logo ? (
-                        <div className="timeline-logo-wrap">
-                          <img
-                            className="timeline-logo"
-                            src={resolvePublicAsset(item.logo)}
-                            alt={item.logoAlt ?? `${item.company} logo`}
-                          />
-                        </div>
-                      ) : null}
-                    </div>
-                  </div>
-                  <ul className="simple-list">
-                    {item.impactBullets.map((point) => (
-                      <li key={point}>{emphasizeNumbers(point)}</li>
-                    ))}
-                  </ul>
-                </article>
-              ))}
-            </div>
-          </section>
+          
 
           <section id="projects" className="section">
             <p className="section-kicker">Featured Projects</p>
@@ -677,6 +645,40 @@ function App() {
                   </article>
                 );
               })}
+            </div>
+          </section>
+
+          <section id="experience" className="section" data-reveal>
+            <p className="section-kicker">Experience</p>
+            {/* <h2>Recent roles and outcomes</h2> */}
+            <div className="timeline">
+              {experiences.map((item) => (
+                <article key={item.id} className="timeline-item">
+                  <div className="timeline-top">
+                    <div className="timeline-copy">
+                      <h3 className="timeline-role">{item.role}</h3>
+                      <p className="timeline-company">{item.company}</p>
+                    </div>
+                    <div className="timeline-meta">
+                      <span className="timeline-period">{item.period}</span>
+                      {item.logo ? (
+                        <div className="timeline-logo-wrap">
+                          <img
+                            className="timeline-logo"
+                            src={resolvePublicAsset(item.logo)}
+                            alt={item.logoAlt ?? `${item.company} logo`}
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <ul className="simple-list">
+                    {item.impactBullets.map((point) => (
+                      <li key={point}>{emphasizeNumbers(point)}</li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
             </div>
           </section>
 

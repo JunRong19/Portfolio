@@ -55,6 +55,17 @@ body {
   min-height: 100vh;
 }
 
+:root.theme-transition body,
+:root.theme-transition body * {
+  transition-property: color, background, background-color, border-color, box-shadow;
+  transition-duration: var(--normal);
+  transition-timing-function: ease;
+}
+
+:root.theme-transition body {
+  transition-property: color, background, background-color, border-color, box-shadow;
+}
+
 .atmosphere {
   position: fixed;
   inset: 0;
@@ -367,7 +378,7 @@ body {
   align-content: start;
   gap: var(--space-1);
   padding: var(--space-3);
-  padding-bottom: calc(var(--space-2) + var(--space-1));
+  padding-bottom: calc(var(--space-4) + var(--space-3));
   background: transparent;
   border: 0;
   box-shadow: none;
@@ -724,6 +735,7 @@ p {
 
 .education-school {
   font-weight: 500;
+  font-size: 0.7rem;
 }
 
 .education-period {
@@ -732,7 +744,7 @@ p {
 
 .education-program {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-soft);
@@ -846,9 +858,11 @@ p {
 }
 
 .hero-itch {
-  margin-top: auto;
+  margin-top: 0.5rem;
   margin-bottom: 0;
   width: fit-content;
+  position: relative;
+  z-index: 5;
   color: var(--text-soft);
   font-family: "IBM Plex Mono", monospace;
   font-size: 0.79rem;
@@ -863,6 +877,7 @@ p {
   height: 1px;
   margin-bottom: 0.6rem;
   background: color-mix(in srgb, var(--line) 70%, transparent);
+  pointer-events: none;
 }
 
 .hero-itch-link {
@@ -870,6 +885,8 @@ p {
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: color var(--fast), border-color var(--fast);
+  position: relative;
+  z-index: 6;
 }
 
 .hero-itch-link:hover {
