@@ -215,8 +215,9 @@ body {
   margin-inline: auto;
   padding: var(--space-4) 0 var(--space-5);
   display: grid;
+  --layout-gap: clamp(1rem, 3vw, 2.1rem);
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(1rem, 3vw, 2.1rem);
+  gap: var(--layout-gap);
   align-items: start;
 }
 
@@ -227,8 +228,10 @@ body {
 }
 
 .left-rail {
-  position: sticky;
+  position: fixed;
   top: calc(var(--header-offset) + var(--space-4));
+  left: calc((100% - min(calc(100% - 1.4rem), var(--max-width))) / 2);
+  width: calc((min(calc(100% - 1.4rem), var(--max-width)) - var(--layout-gap)) * 0.45);
   align-self: start;
   display: block;
   padding: 0 var(--space-3) calc(var(--space-5) + var(--space-4)) 0;
@@ -385,6 +388,60 @@ body {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform: none;
+}
+
+.cube-face-detail {
+  /* display: flex; */
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  gap: 0;
+}
+
+.project-detail-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--line-strong) 70%, transparent)
+    color-mix(in srgb, var(--bg) 75%, transparent);
+  position: relative;
+  min-height: 0;
+}
+
+.project-detail-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.project-detail-body::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+}
+
+.project-detail-body::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--line-strong) 65%, transparent);
+  border-radius: 999px;
+  border: 2px solid color-mix(in srgb, var(--bg) 85%, transparent);
+}
+
+.project-detail-body::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--accent) 45%, var(--line-strong));
+}
+
+.project-detail-body::after {
+  content: "";
+  position: sticky;
+  bottom: 0;
+  display: block;
+  height: 28px;
+  margin-top: -28px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--bg-alt) 85%, var(--bg)) 100%
+  );
+  pointer-events: none;
 }
 
 .cube-face-scale {
@@ -640,7 +697,7 @@ h1 {
   margin-left: 0.08em;
   letter-spacing: 0;
   font-size: 0.9em;
-  transform: translateY(-0.08em);
+  transform:scale(-1, 1);
 }
 
 .headline-sub {
@@ -668,7 +725,7 @@ h3 {
 }
 
 .panel-title {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.3rem;
   font-size: clamp(1.1rem, 2vw, 1.5rem);
 }
 
@@ -691,6 +748,12 @@ p {
 
 .hero-copy {
   margin-bottom: 0;
+  max-width: 95%;
+  text-align: justify;
+}
+
+.hero-copy-box{
+  margin-bottom: 1rem;
   max-width: 95%;
   text-align: justify;
 }
@@ -975,11 +1038,50 @@ p {
   margin-top: 0.1rem;
 }
 
-.cube-face-profile .cube-face-inner {
+.cube-face-inner.cube-face-profile {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
+  overflow: hidden;
   padding-bottom: var(--space-3);
+}
+
+.cube-face-profile .profile-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding-right: 0.4rem;
+  margin-top: var(--space-2);
+}
+
+.cube-face-profile .profile-scroll.is-scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+
+.cube-face-profile .profile-scroll.is-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cube-face-profile .profile-scroll.is-scrollable::-webkit-scrollbar-track {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+}
+
+.cube-face-profile .profile-scroll.is-scrollable::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--line-strong) 65%, transparent);
+  border-radius: 999px;
+  border: 2px solid color-mix(in srgb, var(--bg) 85%, transparent);
+}
+
+.cube-face-profile .profile-scroll.is-scrollable::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--accent) 45%, var(--line-strong));
+}
+
+.cube-face-profile .profile-scroll.is-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--line-strong) 65%, transparent) transparent;
 }
 
 .cube-face-profile .text-link,
@@ -1105,9 +1207,12 @@ p {
   gap: 0.8rem;
 }
 
-.timeline-item,
 .project-item {
-  /* padding-bottom: 0.35rem; */
+  padding-bottom: 0.8rem;
+}
+
+.project-item:last-child {
+  padding-bottom: 0;
 }
 
 .timeline-item:last-child {
@@ -1127,6 +1232,7 @@ p {
   align-items: baseline;
   gap: 0.5rem;
   flex-wrap: wrap;
+  margin-bottom: 0.25rem;
 }
 
 .timeline-copy {
@@ -1162,6 +1268,15 @@ p {
 .tag,
 .project-toggle,
 .meta {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 700;
+}
+
+.meta{
+  margin: 0;
+}
+
+.meta-box{
   font-family: "IBM Plex Mono", monospace;
   font-weight: 700;
 }
@@ -1220,8 +1335,14 @@ p {
   margin-bottom: 1rem;
 }
 
+.simple-list.compact {
+  padding-right: 0;
+  max-width: 95%;
+  text-align: justify;
+}
+
 .simple-list.compact li {
-  margin-bottom: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 .tag-row {
@@ -1230,18 +1351,79 @@ p {
   gap: 0.35rem;
 }
 
-.project-detail-media {
-  margin: 0;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--bg-alt) 88%, var(--bg));
-  overflow: hidden;
+.project-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
 }
 
-.project-detail-image {
+.project-detail-heading {
+  min-width: 0;
+}
+
+.project-detail-back {
+  border: 1px solid color-mix(in srgb, var(--line-strong) 85%, transparent);
+  background: transparent;
+  color: var(--text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 0.55rem;
+  cursor: pointer;
+  transition: border-color var(--fast), color var(--fast), transform var(--fast);
+}
+
+.project-detail-back:hover {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--line-strong));
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.project-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.6rem;
+}
+
+.project-gallery-item {
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.project-gallery-image,
+.project-gallery-video {
   display: block;
-  width: 100%;
-  aspect-ratio: 16 / 10;
+  width: 95%;
+  height: 100%;
   object-fit: cover;
+}
+
+.project-role-block {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.project-detail-footer {
+  padding-top: var(--space-2);
+}
+
+.project-role-title {
+  margin: 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: "IBM Plex Mono", monospace;
+  color: color-mix(in srgb, var(--text) 85%, var(--accent));
+  margin-top: 1rem;
+}
+
+.project-role-meta {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.82rem;
 }
 
 .tag {
@@ -1266,16 +1448,23 @@ p {
   cursor: pointer;
 }
 
+.project-toggle:hover {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--line-strong));
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
 .left-back {
   width: fit-content;
   margin-top: var(--space-2);
-  min-width: 98px;
+  min-width: 6rem;
+  min-height: 2rem;
 }
 
 .project-placeholder {
   margin-top: 0.55rem;
   border: 1px dashed var(--line);
-  min-height: 82px;
+  height: 82px;
   display: grid;
   place-items: center;
   color: var(--text-soft);
@@ -1283,6 +1472,28 @@ p {
   font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.project-visual {
+  margin: 0.55rem 0 0;
+  width: 100%;
+  height: 82px;
+  border: 1px solid color-mix(in srgb, var(--accent) 65%, var(--line-strong));
+  outline: 1px solid color-mix(in srgb, var(--line-strong) 80%, transparent);
+  outline-offset: -2px;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--bg) 55%, transparent),
+    0 10px 24px color-mix(in srgb, var(--bg) 70%, transparent);
+  background: color-mix(in srgb, var(--bg-alt) 78%, var(--bg));
+  overflow: hidden;
+}
+
+.project-visual-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
 }
 
 .project-details {
@@ -1311,6 +1522,8 @@ p {
   .left-rail {
     position: static;
     top: auto;
+    left: auto;
+    width: 100%;
     padding: 0;
     border-right: 0;
     perspective: 600px;
@@ -1493,4 +1706,11 @@ p {
   .cursor-trail-layer {
     display: none;
   }
+}
+.project-item > p {
+  margin-bottom: 0.35rem;
+}
+
+.project-item .tag-row {
+  margin-top: 0.1rem;
 }

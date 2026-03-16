@@ -27,6 +27,7 @@ function App() {
   const trailLayerRef = useRef(null);
   const leftColumnRef = useRef(null);
   const leftRailRef = useRef(null);
+  const profileScrollRef = useRef(null);
   const cubeStageRef = useRef(null);
   const cubeShellRef = useRef(null);
   const profileProbeRef = useRef(null);
@@ -39,6 +40,7 @@ function App() {
   const [profileShellHeight, setProfileShellHeight] = useState(BASE_CUBE_SHELL_HEIGHT);
   const [detailShellHeight, setDetailShellHeight] = useState(BASE_CUBE_SHELL_HEIGHT + DETAIL_HEIGHT_DELTA);
   const [maxCubeViewportHeight, setMaxCubeViewportHeight] = useState(null);
+  const [profileHasOverflow, setProfileHasOverflow] = useState(false);
   const CUBE_TRANSITION_MS = 520;
   const SNAP_TICK_MS = 34;
   const SETTLE_FEEDBACK_MS = 620;
@@ -63,10 +65,14 @@ function App() {
   const isExpandedHeight = cubePhase !== "returning" && leftPanelMode === "projectDetail";
   const shouldReserveExpandedBottom = leftPanelMode === "projectDetail";
   const desiredCubeHeight = isExpandedHeight ? detailShellHeight : profileShellHeight;
-  const collapsedRenderedHeight = profileShellHeight;
-  const expandedRenderedHeight = isExpandedHeight && maxCubeViewportHeight != null
-    ? Math.min(desiredCubeHeight, maxCubeViewportHeight)
-    : desiredCubeHeight;
+  const profileRenderedHeight = maxCubeViewportHeight != null
+    ? Math.min(profileShellHeight, maxCubeViewportHeight)
+    : profileShellHeight;
+  const detailRenderedHeight = maxCubeViewportHeight != null
+    ? Math.min(detailShellHeight, maxCubeViewportHeight)
+    : detailShellHeight;
+  const collapsedRenderedHeight = profileRenderedHeight;
+  const expandedRenderedHeight = isExpandedHeight ? detailRenderedHeight : profileRenderedHeight;
   const expandedBottomReserve = shouldReserveExpandedBottom
     ? Math.max(0, detailShellHeight - profileShellHeight + CUBE_VIEWPORT_GUTTER)
     : 0;
@@ -241,8 +247,12 @@ function App() {
     </div>
   );
 
-  const renderProfileFace = (keyPrefix) => renderFaceContent("cube-face-profile", (
-    <>
+  const renderProfileFace = (keyPrefix) => {
+    const isFrontProfile = keyPrefix === "front-profile";
+    const profileScrollClass = `profile-scroll${profileHasOverflow && isFrontProfile ? " is-scrollable" : ""}`;
+
+    return renderFaceContent("cube-face-profile", (
+      <>
       {/* <p className="eyebrow">{hero.eyebrow}</p> */}
       <div className="hero-header">
                 <h1 className="headline">
@@ -280,89 +290,121 @@ function App() {
       </div>
 
 
-      <p className="section-kicker education-kicker">Education</p>
-      <div className="education-list" aria-label="Education">
-        {education.map((item) => (
-          <div key={item.id} className="education-item">
-            <div className="education-head">
-              <span className="education-school">{item.school}</span>
-              <span className="education-period">{item.period}</span>
-            </div>
-            <p className="education-program">{item.program}</p>
-            {/* <p className="education-score">{item.cgpa}</p> */}
-          </div>
-        ))}
-      </div>
-
-      <p className="section-kicker expertise-kicker">Expertise</p>
-      <div className="expertise-list" aria-label="Expertise">
-        {expertise.map((group) => (
-          <div key={group.id} className="expertise-group">
-            <div className="expertise-title">{group.title}</div>
-              <div className="expertise-tags">
-                {group.items.map((item) => (
-                  <span
-                    key={`${group.id}-${item.label}`}
-                    className="expertise-tag"
-                  >
-                    <img
-                      className="expertise-icon"
-                      src={resolvePublicAsset(item.icon)}
-                      alt={`${item.label} logo`}
-                      loading="lazy"
-                    />
-                  </span>
-                ))}
+      <div
+        className={profileScrollClass}
+        aria-label="Education and expertise"
+        ref={isFrontProfile ? profileScrollRef : null}
+      >
+        <p className="section-kicker education-kicker">Education</p>
+        <div className="education-list" aria-label="Education">
+          {education.map((item) => (
+            <div key={item.id} className="education-item">
+              <div className="education-head">
+                <span className="education-school">{item.school}</span>
+                <span className="education-period">{item.period}</span>
               </div>
+              <p className="education-program">{item.program}</p>
+              {/* <p className="education-score">{item.cgpa}</p> */}
             </div>
-        ))}
+          ))}
+        </div>
+
+        <p className="section-kicker expertise-kicker">Expertise</p>
+        <div className="expertise-list" aria-label="Expertise">
+          {expertise.map((group) => (
+            <div key={group.id} className="expertise-group">
+              <div className="expertise-title">{group.title}</div>
+                <div className="expertise-tags">
+                  {group.items.map((item) => (
+                    <span
+                      key={`${group.id}-${item.label}`}
+                      className="expertise-tag"
+                    >
+                      <img
+                        className="expertise-icon"
+                        src={resolvePublicAsset(item.icon)}
+                        alt={`${item.label} logo`}
+                        loading="lazy"
+                      />
+                    </span>
+                  ))}
+                </div>
+              </div>
+          ))}
+        </div>
+
+        <p className="hero-itch">
+          Looking for more? Check out my game projects <a className="hero-itch-link" href="https://kyahiax.itch.io/" target="_blank" rel="noreferrer">here</a>!
+        </p>
       </div>
 
-
-
-      <p className="hero-itch">
-        Looking for more? Check out my game projects <a className="hero-itch-link" href="https://kyahiax.itch.io/" target="_blank" rel="noreferrer">here</a>!
-      </p>
-
-    </>
-  ));
+      </>
+    ));
+  };
 
   const renderProjectFace = (project, keyPrefix) => renderFaceContent("cube-face-detail", (
     <>
-      <p className="eyebrow">Project Detail</p>
-      <h2 className="panel-title">{project.title}</h2>
-      <p className="meta">
-        {project.role} / {project.period}
-      </p>
-      <p className="hero-copy">{project.summary}</p>
-      {project.image ? (
-        <figure className="project-detail-media">
-          <img
-            className="project-detail-image"
-            src={resolvePublicAsset(project.image)}
-            alt={project.imageAlt ?? `${project.title} preview`}
-          />
-        </figure>
-      ) : null}
-      <div className="tag-row">
-        {project.stack.map((tag) => (
-          <span className="tag" key={`${keyPrefix}-${tag}`}>
-            {tag}
-          </span>
-        ))}
+      <div className="project-detail-header">
+        <div className="project-detail-heading">
+          <p className="eyebrow">Project Detail</p>
+          <h2 className="panel-title">{project.title}</h2>
+        </div>
       </div>
-      <ul className="simple-list compact">
-        {project.impactBullets.slice(0, 3).map((point) => (
-          <li key={`${keyPrefix}-${point}`}>{point}</li>
-        ))}
-      </ul>
-      <button
-        type="button"
-        className="project-toggle left-back"
-        onClick={resetCube}
-      >
-        Back
-      </button>
+        <p className="meta-box">
+          {project.role} / {project.period}
+        </p>
+      <div className="project-detail-body">
+
+        {/* <p className="hero-copy-box">{project.summary}</p> */}
+        {/* <div className="tag-row">
+          {project.stack.map((tag) => (
+            <span className="tag" key={`${keyPrefix}-${tag}`}>
+              {tag}
+            </span>
+          ))}
+        </div> */}
+        <div className="project-gallery">
+          {(project.gallery && project.gallery.length ? project.gallery : project.image ? [{
+            type: "image",
+            src: project.image,
+            alt: project.imageAlt ?? `${project.title} preview`,
+          }] : []).map((item, index) => (
+            <figure className="project-gallery-item" key={`${keyPrefix}-media-${index}`}>
+              {item.type === "video" ? (
+                <video
+                  className="project-gallery-video"
+                  src={resolvePublicAsset(item.src)}
+                  controls
+                  preload="metadata"
+                />
+              ) : (
+                <img
+                  className="project-gallery-image"
+                  src={resolvePublicAsset(item.src)}
+                  alt={item.alt ?? `${project.title} screenshot`}
+                />
+              )}
+            </figure>
+          ))}
+        </div>
+        <div className="project-role-block">
+          <h3 className="project-role-title">Role &amp; Responsibilities:</h3>
+          <ul className="simple-list compact">
+            {project.impactBullets.slice(0, 3).map((point) => (
+              <li key={`${keyPrefix}-${point}`}>{point}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div className="project-detail-footer">
+        <button
+          type="button"
+          className="project-toggle left-back"
+          onClick={resetCube}
+        >
+          Back
+        </button>
+      </div>
     </>
   ));
 
@@ -418,6 +460,7 @@ function App() {
     return () => observer.disconnect();
   }, []);
 
+
   useEffect(() => {
     const node = cubeShellRef.current;
     if (!node || typeof ResizeObserver === "undefined") {
@@ -471,6 +514,42 @@ function App() {
   // Intentionally no viewport cap: the left box should not resize while scrolling.
 
   useEffect(() => {
+    if (leftPanelMode !== "profile") {
+      setProfileHasOverflow(false);
+      return undefined;
+    }
+
+    const node = profileScrollRef.current;
+    if (!node || typeof window === "undefined") {
+      return undefined;
+    }
+
+    let frameId = 0;
+    let observer;
+    const updateOverflow = () => {
+      const hasOverflow = node.scrollHeight - 1 > node.clientHeight;
+      setProfileHasOverflow((previous) => (previous === hasOverflow ? previous : hasOverflow));
+    };
+
+    frameId = window.requestAnimationFrame(updateOverflow);
+
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(updateOverflow);
+      observer.observe(node);
+    }
+
+    window.addEventListener("resize", updateOverflow);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", updateOverflow);
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, [leftPanelMode, cubePhase, profileShellHeight, maxCubeViewportHeight]);
+
+  useEffect(() => {
     if (cubePhase !== "idle" || leftPanelMode !== "projectDetail" || cubeBusyRef.current || !queuedResetRef.current) {
       return;
     }
@@ -478,6 +557,32 @@ function App() {
     queuedResetRef.current = false;
     runResetCube();
   }, [cubePhase, leftPanelMode]);
+
+  useEffect(() => {
+    if (leftPanelMode !== "projectDetail") {
+      return;
+    }
+    if (cubePhase !== "snap" && cubePhase !== "idle") {
+      return;
+    }
+
+    const resetScroll = () => {
+      const scrollContainer = document.querySelector(
+        '.cube-face[data-visible="true"] .project-detail-body',
+      );
+      if (scrollContainer) {
+        scrollContainer.scrollTop = 0;
+      }
+    };
+
+    const frameId = window.requestAnimationFrame(resetScroll);
+    const timeoutId = window.setTimeout(resetScroll, 0);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [activeProjectId, leftPanelMode, cubePhase]);
 
   useEffect(() => () => {
     clearCubeTimer();
@@ -518,7 +623,11 @@ function App() {
         </button>
       </header>
 
-      <main id="main-content" className="layout-grid">
+      <main
+        id="main-content"
+        className="layout-grid"
+        data-detail-open={leftPanelMode === "projectDetail" ? "true" : "false"}
+      >
         <div ref={leftColumnRef} className="left-column">
           <aside ref={leftRailRef} id="hero" className="left-rail">
             <div
@@ -624,9 +733,32 @@ function App() {
                       ))}
                     </div>
 
-                    {/* <div className="project-placeholder" aria-hidden="true">
-                      Project Visual Placeholder
-                    </div> */}
+                    {(() => {
+                      const primaryImage = project.image
+                        ? {
+                          src: project.image,
+                          alt: project.imageAlt ?? `${project.title} preview`,
+                        }
+                        : project.gallery?.find((item) => item.type === "image") ?? null;
+
+                      if (primaryImage) {
+                        return (
+                          <figure className="project-visual">
+                            <img
+                              className="project-visual-image"
+                              src={resolvePublicAsset(primaryImage.src)}
+                              alt={primaryImage.alt ?? `${project.title} preview`}
+                            />
+                          </figure>
+                        );
+                      }
+
+                      return (
+                        <div className="project-placeholder" aria-hidden="true">
+                          Project Visual Placeholder
+                        </div>
+                      );
+                    })()}
 
                     <button
                       type="button"

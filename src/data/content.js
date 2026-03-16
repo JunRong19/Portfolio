@@ -19,6 +19,7 @@
  * @property {string} summary
  * @property {string} [image]
  * @property {string} [imageAlt]
+ * @property {{type: "image" | "video", src: string, alt?: string}[]} [gallery]
  * @property {string[]} stack
  * @property {string[]} impactBullets
  */
@@ -61,7 +62,7 @@ export const navItems = [
 export const hero = {
   eyebrow: "Software Developer",
   headline: "Hello,I'm",
-  subheadline: "I'm a final-year computer science student, graduting in 2026.",
+  subheadline: "I'm a final-year computer science student, graduating in 2026.",
   ctas: [
     { label: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true, newTab: true },
     { label: "GitHub", href: "https://github.com/JunRong19", newTab: true },
@@ -165,43 +166,73 @@ export const experiences = [
 export const projects = [
   {
     id: "project-1",
-    title: "Project Placeholder One",
+    title: "Keep It Brief!",
     role: "Tools Programmer",
     period: "8 months",
-    summary: "Objective placeholder: define the core delivery goal and measurable success metric.",
-    // image: "/images/temp.jpg",
-    imageAlt: "Project detail visual for Project Placeholder One.",
-    stack: ["C#", "Unity", "Tooling"],
+    summary: "Keep It Brief! is a 3D hack n' slash game developed in Litterbox engine.",
+    image: "/images/KIB.png",
+    gallery: [
+      { type: "video", src: "/videos/KeepItBrief_Trailer.mp4" },
+    ],
+    stack: ["Custom Engine", "C++", "ImGui"],
     impactBullets: [
-      "Constraints placeholder: list technical and timeline constraints.",
-      "Approach placeholder: summarize the implementation strategy.",
-      "Outcome placeholder: capture impact and performance result.",
+      "Built intuitive editor UI tools enabling artists and designers to easily adjust game parameters and assets.",
+      "Implemented memory tracking and performance visualization tools to identify bottlenecks and improve frame rates.",
+      "Collaborated with team members to streamline asset integration, testing, and development workflows.",
     ],
   },
   {
     id: "project-2",
-    title: "Project Placeholder Two",
+    title: "RicoShaman",
     role: "Technical Lead",
-    period: "8 months",
-    summary: "Objective placeholder: define the architecture and coordination target.",
-    stack: ["C++", "Architecture", "AI"],
+    period: "4 months",
+    summary: "RicoShaman is a 2D physic puzzle game developed in Anarchy Engine.",
+    image: "/images/Ricoshaman.png",
+    imageAlt: "Project detail visual for RicoShaman.",
+    gallery: [
+      { type: "video", src: "/videos/RicoshamanTrailer.mp4" },
+    ],
+    stack: ["Custom Engine", "C++", "OpenGL"],
     impactBullets: [
-      "Constraints placeholder: specify risks and production limits.",
-      "Approach placeholder: note system design and team alignment.",
-      "Outcome placeholder: summarize stability and delivery gain.",
+      "Led the project’s technical architecture, ensuring scalable and maintainable systems across gameplay, AI, and graphics.",
+      "Resolved complex technical issues to keep development on schedule.",
+      "Collaborated with artists, designers, and programmers to align technical requirements and maintain project progress.",
     ],
   },
   {
     id: "project-3",
-    title: "Project Placeholder Three",
-    role: "Graphics Programmer",
+    title: "MomoTown",
+    role: "Graphics Programmer / 2D Artist",
     period: "4 months",
-    summary: "Objective placeholder: state rendering and interaction target.",
-    stack: ["Rendering", "UI/UX", "Optimization"],
+    summary: "MomoTown is a casual 2D isometric city-builder game developed in Alpha Engine.",
+    image: "/images/Momotown.jpg",
+    imageAlt: "Project detail visual for MomoTown.",
+    gallery: [
+      { type: "video", src: "/videos/Momotown_Trailer.mp4" },
+    ],
+    stack: ["Custom Engine", "C++", "Game Art"],
     impactBullets: [
-      "Constraints placeholder: mention hardware/performance boundaries.",
-      "Approach placeholder: describe pipeline and UX implementation.",
-      "Outcome placeholder: highlight optimization and visual quality effect.",
+      "Developed an optimized rendering pipeline for 2D sprites, backgrounds, and effects, reducing load times and memory usage.",
+      "Produced sprites, backgrounds, and visual assets while maintaining the game’s art style and thematic consistency.",
+      "Designed responsive control systems for intuitive menu navigation and player interactions.",
+    ],
+  },  
+  {
+    id: "project-4",
+    title: "MouseHunt IAP2Gold",
+    role: "Solo Developer",
+    period: "1 Week",
+    summary: "MouseHunt IAP2Gold is a Chrome extension that calculates the gold value of MouseHunt IAPs using live marketplace buy orders.",
+    // image: "/images/temp.jpg",
+    imageAlt: "Project detail visual for MouseHunt IAP2Gold.",
+    gallery: [
+      { type: "image", src: "/images/IAP2Gold.png", alt: "MouseHunt IAP2Gold gameplay screenshot." },
+    ],
+    stack: ["Chrome Extension", "JavaScript", "Web Scraping"],
+    impactBullets: [
+      "Constraints placeholder: list technical and timeline constraints.",
+      "Approach placeholder: summarize the implementation strategy.",
+      "Outcome placeholder: capture impact and performance result.",
     ],
   },
 ];
