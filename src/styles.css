@@ -234,13 +234,14 @@ body {
   width: calc((min(calc(100% - 1.4rem), var(--max-width)) - var(--layout-gap)) * 0.45);
   align-self: start;
   display: block;
-  padding: 0 var(--space-3) calc(var(--space-5) + var(--space-4)) 0;
+  /* padding: 0 var(--space-3) calc(var(--space-5) + var(--space-4)) 0; */
   perspective: 1200px;
   perspective-origin: 42% center;
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   overflow: visible;
   z-index: 4;
+  height: 110%;
 }
 
 .cube-stage {
@@ -251,11 +252,11 @@ body {
   overflow: visible;
 }
 
-.cube-stage-spacer {
+/* .cube-stage-spacer {
   height: var(--cube-bottom-reserve, 0px);
   pointer-events: none;
   transition: height var(--cube-transition-ms, 520ms) cubic-bezier(0.2, 0.75, 0.2, 1);
-}
+} */
 
 .cube-shell {
   position: absolute;
@@ -467,6 +468,8 @@ body {
   pointer-events: none;
   overflow: visible;
 }
+
+/* * { outline: 1px solid red !important; } */
 
 .cube-measure-probe {
   position: absolute;
@@ -1570,17 +1573,6 @@ p {
     gap: 0.6rem;
   }
 
-  .left-rail {
-    position: static;
-    top: auto;
-    left: auto;
-    width: 100%;
-    padding: 0;
-    border-right: 0;
-    perspective: 600px;
-    overflow: visible;
-  }
-
   .cube-shell {
     position: relative;
     top: auto;
@@ -1599,10 +1591,6 @@ p {
   .cube-stage-spacer {
     height: 0;
   }
-
-  /* .cube-shell::before {
-    display: none;
-  } */
 
   .cube-scene {
     --cube-depth: 0px;

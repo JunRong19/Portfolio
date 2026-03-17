@@ -682,7 +682,7 @@ function App() {
               </div>
             </div>
           </aside>
-          <div className="cube-stage-spacer" style={cubeSpacerStyle} aria-hidden="true" />
+          {/* <div className="cube-stage-spacer" style={cubeSpacerStyle} aria-hidden="true" /> */}
         </div>
 
         <div className="right-flow">
