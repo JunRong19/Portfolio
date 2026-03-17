@@ -1137,6 +1137,10 @@ p {
   transition: color var(--fast);
 }
 
+.contact-link{
+  width: fit-content;
+}
+
 #contact .contact-row:hover span:first-child {
   color: color-mix(in srgb, var(--text) 76%, var(--accent));
 }
