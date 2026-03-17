@@ -333,6 +333,8 @@ function App() {
           ))}
         </div>
 
+        <div className="hero-itch-divider"/>
+
         <p className="hero-itch">
           Looking for more? Check out my game projects <a className="hero-itch-link" href="https://kyahiax.itch.io/" target="_blank" rel="noreferrer">here</a>!
         </p>

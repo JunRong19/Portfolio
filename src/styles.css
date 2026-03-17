@@ -225,6 +225,7 @@ body {
   position: relative;
   min-width: 0;
   align-self: stretch;
+  z-index: 1;
 }
 
 .left-rail {
@@ -936,15 +937,12 @@ p {
   text-transform: uppercase;
 }
 
-/* .hero-itch::before {
-  content: "";
-  display: block;
+.hero-itch-divider {
+  margin-top: 0.5rem;
   width: min(220px, 100%);
-  height: 1px;
-  margin-bottom: 0.6rem;
-  background: color-mix(in srgb, var(--line) 70%, transparent);
-  pointer-events: none;
-} */
+  height: 2px;
+  background: color-mix(in srgb, var(--line) 90%, transparent);
+}
 
 .hero-itch-link {
   color: var(--text);
