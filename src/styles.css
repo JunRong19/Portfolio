@@ -240,7 +240,7 @@ body {
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
   overflow: visible;
-  z-index: 1;
+  z-index: 4;
 }
 
 .cube-stage {
@@ -1279,6 +1279,7 @@ p {
 .meta-box{
   font-family: "IBM Plex Mono", monospace;
   font-weight: 700;
+  margin-bottom: 0.4rem;
 }
 
 .timeline-period {
@@ -1360,6 +1361,51 @@ p {
 
 .project-detail-heading {
   min-width: 0;
+}
+
+.project-detail-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.project-detail-actions {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+
+.project-detail-github {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.1rem;
+  padding: 0.2rem 0.85rem;
+  min-width: 3.2rem;
+  border: 1px solid color-mix(in srgb, var(--line-strong) 85%, transparent);
+  border-radius: 2rem !important;
+  background: color-mix(in srgb, var(--bg-alt) 88%, var(--bg));
+  transition: border-color var(--fast), color var(--fast), transform var(--fast);
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+}
+
+:root[data-theme="light"] .project-detail-github {
+  background: #0f1116;
+  border-color: color-mix(in srgb, #000 55%, var(--line-strong));
+}
+
+.project-detail-github img {
+  display: block;
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.project-detail-github:hover {
+  border-color: color-mix(in srgb, var(--accent) 65%, var(--line-strong));
+  color: var(--text);
+  transform: translateY(-1px);
 }
 
 .project-detail-back {

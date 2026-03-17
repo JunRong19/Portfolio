@@ -347,12 +347,30 @@ function App() {
       <div className="project-detail-header">
         <div className="project-detail-heading">
           <p className="eyebrow">Project Detail</p>
-          <h2 className="panel-title">{project.title}</h2>
+          <div className="project-detail-title-row">
+            <h2 className="panel-title">{project.title}</h2>
+          </div>
         </div>
       </div>
         <p className="meta-box">
-          {project.role} / {project.period}
+          {project.role} 
         </p>
+      {project.repo ? (
+        <div className="project-detail-actions">
+          <a
+            className="project-detail-github"
+            href={project.repo}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${project.title} GitHub repository`}
+          >
+            <img
+              src={resolvePublicAsset("/images/Github.png")}
+              alt="GitHub"
+            />
+          </a>
+        </div>
+      ) : null}
       <div className="project-detail-body">
 
         {/* <p className="hero-copy-box">{project.summary}</p> */}
@@ -512,42 +530,6 @@ function App() {
   }, []);
 
   // Intentionally no viewport cap: the left box should not resize while scrolling.
-
-  useEffect(() => {
-    if (leftPanelMode !== "profile") {
-      setProfileHasOverflow(false);
-      return undefined;
-    }
-
-    const node = profileScrollRef.current;
-    if (!node || typeof window === "undefined") {
-      return undefined;
-    }
-
-    let frameId = 0;
-    let observer;
-    const updateOverflow = () => {
-      const hasOverflow = node.scrollHeight - 1 > node.clientHeight;
-      setProfileHasOverflow((previous) => (previous === hasOverflow ? previous : hasOverflow));
-    };
-
-    frameId = window.requestAnimationFrame(updateOverflow);
-
-    if (typeof ResizeObserver !== "undefined") {
-      observer = new ResizeObserver(updateOverflow);
-      observer.observe(node);
-    }
-
-    window.addEventListener("resize", updateOverflow);
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-      window.removeEventListener("resize", updateOverflow);
-      if (observer) {
-        observer.disconnect();
-      }
-    };
-  }, [leftPanelMode, cubePhase, profileShellHeight, maxCubeViewportHeight]);
 
   useEffect(() => {
     if (cubePhase !== "idle" || leftPanelMode !== "projectDetail" || cubeBusyRef.current || !queuedResetRef.current) {

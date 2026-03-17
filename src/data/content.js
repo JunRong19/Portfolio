@@ -96,7 +96,7 @@ export const expertise = [
       { label: "C", icon: "/images/c.svg" },
       { label: "C++", icon: "/images/cpp.svg" },
       { label: "C#", icon: "/images/csharp.svg" },
-      // { label: "JavaScript", icon: "/images/js.svg" },
+      { label: "JavaScript", icon: "/images/javascript.svg" },
       { label: "Python", icon: "/images/python.svg" },
     ],
   },
@@ -129,8 +129,8 @@ export const experiences = [
     logo: "/images/Razer-logo.png",
     logoAlt: "Razer logo",
     impactBullets: [
-      "Developed and maintained automated test cases for Razer peripherals, achieving 90% test coverage.",
-      "Built a physical testing rig supporting end-to-end automation, reducing manual testing time by 60%.",
+      "Developed and maintained automated test cases for Razer peripherals, achieving 95% test coverage.",
+      "Built a physical testing rig supporting end-to-end automation, reducing manual testing time by 57%.",
       "Created 4 internal automation tools to automate tasks and improve team workflow efficiency.",
     ],
   },
@@ -156,7 +156,7 @@ export const experiences = [
     logoAlt: "TKG logo",
     impactBullets: [
       "Developed 3 mobile applications across Android and iOS platforms.",
-      "Optimized performance by 70% and ensured cross-device compatibility.",
+      "Optimized performance by 78% and ensured cross-device compatibility.",
       "Participated in weekly sprint meetings to align development with business goals and user feedback.",
     ],
   },
@@ -170,15 +170,16 @@ export const projects = [
     role: "Tools Programmer",
     period: "8 months",
     summary: "Keep It Brief! is a 3D hack n' slash game developed in Litterbox engine.",
+    repo: "https://github.com/kkenboi/CoolerCatParty",
     image: "/images/KIB.png",
     gallery: [
       { type: "video", src: "/videos/KeepItBrief_Trailer.mp4" },
     ],
     stack: ["Custom Engine", "C++", "ImGui"],
     impactBullets: [
-      "Built intuitive editor UI tools enabling artists and designers to easily adjust game parameters and assets.",
-      "Implemented memory tracking and performance visualization tools to identify bottlenecks and improve frame rates.",
-      "Collaborated with team members to streamline asset integration, testing, and development workflows.",
+      "Built a custom engine editor using ImGui and C++, allowing developers to easily modify game variables, assets and scene elements with ease.",
+      "Developed memory tracking and performance tools to identify bottlenecks and improve stability.",
+      "Integrated ImGuizmo into the game engine to enable game object manipulation, streamlining level design and prototyping.",
     ],
   },
   {
@@ -187,6 +188,7 @@ export const projects = [
     role: "Technical Lead",
     period: "4 months",
     summary: "RicoShaman is a 2D physic puzzle game developed in Anarchy Engine.",
+    repo: "https://github.com/JunRong19/Anarchy-Engine",
     image: "/images/Ricoshaman.png",
     imageAlt: "Project detail visual for RicoShaman.",
     gallery: [
@@ -194,9 +196,9 @@ export const projects = [
     ],
     stack: ["Custom Engine", "C++", "OpenGL"],
     impactBullets: [
-      "Led the project’s technical architecture, ensuring scalable and maintainable systems across gameplay, AI, and graphics.",
-      "Resolved complex technical issues to keep development on schedule.",
-      "Collaborated with artists, designers, and programmers to align technical requirements and maintain project progress.",
+      "Spearheaded the project’s technical architecture, ensuring scalable and maintainable systems across gameplay, AI, and graphics.",
+      "Built a custom engine editor with ImGui and contributed to the rendering system using C++ and OpenGL.",
+      "Collaborated with artists, designers and programmers to align technical requirements and maintain project progress.",
     ],
   },
   {
@@ -205,6 +207,7 @@ export const projects = [
     role: "Graphics Programmer / 2D Artist",
     period: "4 months",
     summary: "MomoTown is a casual 2D isometric city-builder game developed in Alpha Engine.",
+    repo: "https://github.com/JarrettAng/Momotaro",
     image: "/images/Momotown.jpg",
     imageAlt: "Project detail visual for MomoTown.",
     gallery: [
@@ -212,9 +215,9 @@ export const projects = [
     ],
     stack: ["Custom Engine", "C++", "Game Art"],
     impactBullets: [
-      "Developed an optimized rendering pipeline for 2D sprites, backgrounds, and effects, reducing load times and memory usage.",
-      "Produced sprites, backgrounds, and visual assets while maintaining the game’s art style and thematic consistency.",
-      "Designed responsive control systems for intuitive menu navigation and player interactions.",
+      "Developed the rendering pipeline for 2D sprites, backgrounds and effects, streamlining asset integration and optimizing performance.",
+      "Created sprites, backgrounds and visual assets while maintaining the game’s art style and thematic consistency.",
+      "Designed a responsive input systems for UI navigation and player interactions.",
     ],
   },  
   {
@@ -223,16 +226,17 @@ export const projects = [
     role: "Solo Developer",
     period: "1 Week",
     summary: "MouseHunt IAP2Gold is a Chrome extension that calculates the gold value of MouseHunt IAPs using live marketplace buy orders.",
-    // image: "/images/temp.jpg",
+    image: "/images/IAP2Gold.png",
     imageAlt: "Project detail visual for MouseHunt IAP2Gold.",
+    repo: "https://github.com/JunRong19/MouseHunt-IAP2Gold",
     gallery: [
-      { type: "image", src: "/images/IAP2Gold.png", alt: "MouseHunt IAP2Gold gameplay screenshot." },
+      { type: "image", src: "/images/IAP2Gold_SS.png", alt: "MouseHunt IAP2Gold screenshot." },
     ],
     stack: ["Chrome Extension", "JavaScript", "Web Scraping"],
     impactBullets: [
-      "Constraints placeholder: list technical and timeline constraints.",
-      "Approach placeholder: summarize the implementation strategy.",
-      "Outcome placeholder: capture impact and performance result.",
+      "Web scraped MouseHunt IAPs and live marketplace buy orders to find the most cost-effective IAPs for purchase.",
+      "Deployed and maintained the extension on the Chrome Web Store, handling packaging and updates.",
+      "Utilized API calls to fetch real-time data, ensuring accurate and up-to-date calculations.",
     ],
   },
 ];
