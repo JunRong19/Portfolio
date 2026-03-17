@@ -933,7 +933,7 @@ p {
   text-transform: uppercase;
 }
 
-.hero-itch::before {
+/* .hero-itch::before {
   content: "";
   display: block;
   width: min(220px, 100%);
@@ -941,7 +941,7 @@ p {
   margin-bottom: 0.6rem;
   background: color-mix(in srgb, var(--line) 70%, transparent);
   pointer-events: none;
-}
+} */
 
 .hero-itch-link {
   color: var(--text);
@@ -1038,7 +1038,7 @@ p {
   margin-top: 0.1rem;
 }
 
-.cube-face-inner.cube-face-profile {
+.cube-face-profile .cube-face-inner {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -1047,12 +1047,13 @@ p {
   padding-bottom: var(--space-3);
 }
 
+
 .cube-face-profile .profile-scroll {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
   padding-right: 0.4rem;
-  margin-top: var(--space-2);
+  /* margin-top: var(--space-2); */
 }
 
 .cube-face-profile .profile-scroll.is-scrollable {
@@ -1599,9 +1600,9 @@ p {
     height: 0;
   }
 
-  .cube-shell::before {
+  /* .cube-shell::before {
     display: none;
-  }
+  } */
 
   .cube-scene {
     --cube-depth: 0px;
@@ -1729,9 +1730,9 @@ p {
     height: 0;
   }
 
-  .cube-shell::before {
+  /* .cube-shell::before {
     display: none;
-  }
+  } */
 
   .cube-face-scale {
     width: 100%;
