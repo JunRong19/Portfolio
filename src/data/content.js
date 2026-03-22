@@ -130,7 +130,7 @@ export const experiences = [
     logoAlt: "Razer logo",
     impactBullets: [
       "Developed and maintained automated test cases for Razer peripherals, achieving 95% test coverage.",
-      "Built a physical testing rig supporting end-to-end automation, reducing manual testing time by 57%.",
+      "Built a physical testing rig supporting end-to-end automation, reducing manual testing time by 60%.",
       "Created 4 internal automation tools to automate tasks and improve team workflow efficiency.",
     ],
   },
@@ -156,7 +156,7 @@ export const experiences = [
     logoAlt: "TKG logo",
     impactBullets: [
       "Developed 3 mobile applications across Android and iOS platforms.",
-      "Optimized performance by 78% and ensured cross-device compatibility.",
+      "Optimized performance by 70% and ensured cross-device compatibility.",
       "Participated in weekly sprint meetings to align development with business goals and user feedback.",
     ],
   },
