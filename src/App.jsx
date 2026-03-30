@@ -632,7 +632,7 @@ function App() {
       <div ref={trailLayerRef} className="cursor-trail-layer" aria-hidden="true" />
 
       <header className="site-header">
-        <p className="brand-line">Tan Jun Rong / Software Developer</p>
+        <p className="brand-line">Tan Jun Rong / Software Engineer</p>
         {/* <nav className="site-nav" aria-label="Primary">
           {navItems.map((item) => (
             <a key={item.id} href={`#${item.id}`}>

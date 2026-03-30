@@ -60,7 +60,7 @@ export const navItems = [
 ];
 
 export const hero = {
-  eyebrow: "Software Developer",
+  eyebrow: "Software Engineer",
   headline: "Hello,I'm",
   subheadline: "I'm a final-year computer science student, graduating in 2026.",
   ctas: [
