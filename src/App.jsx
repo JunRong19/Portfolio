@@ -59,6 +59,20 @@ function App() {
     const normalizedPath = assetPath.startsWith("/") ? assetPath.slice(1) : assetPath;
     return `${import.meta.env.BASE_URL}${normalizedPath}`;
   };
+  const resolveLinkHref = (href) => {
+    if (!href) {
+      return "";
+    }
+    if (
+      /^(?:[a-z]+:)?\/\//i.test(href)
+      || href.startsWith("mailto:")
+      || href.startsWith("tel:")
+      || href.startsWith("#")
+    ) {
+      return href;
+    }
+    return resolvePublicAsset(href);
+  };
   const frontDetailProject = getProjectById(faceProjectMap[0]);
   const showProfileFront = leftPanelMode === "profile" || cubePhase === "rotating";
   const isCubeInteractive = cubePhase === "idle";
@@ -246,6 +260,7 @@ function App() {
       </div>
     </div>
   );
+  const isFirefox = typeof navigator !== "undefined" && /firefox|fxios/i.test(navigator.userAgent);
 
   const renderProfileFace = (keyPrefix) => {
     const isFrontProfile = keyPrefix === "front-profile";
@@ -276,7 +291,7 @@ function App() {
           <span key={`${keyPrefix}-${item.id}`} className="hero-contact-item">
             <a
               className={`contact-row ${item.id === "resume" ? "is-resume" : ""}`}
-              href={item.href}
+              href={resolveLinkHref(item.href)}
               target={item.id === "email" ? undefined : "_blank"}
               rel={item.id === "email" ? undefined : "noreferrer"}
             >
@@ -821,7 +836,7 @@ function App() {
                     </div>
                     <div className="timeline-meta">
                       <span className="timeline-period">{item.period}</span>
-                      {item.logo ? (
+                      {item.logo && !isFirefox ? (
                         <div className="timeline-logo-wrap">
                           <img
                             className="timeline-logo"
