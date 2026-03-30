@@ -534,6 +534,50 @@ function App() {
   // Intentionally no viewport cap: the left box should not resize while scrolling.
 
   useEffect(() => {
+    if (leftPanelMode !== "profile") {
+      setProfileHasOverflow(false);
+      return undefined;
+    }
+
+    const node = profileScrollRef.current;
+    if (!node || typeof window === "undefined") {
+      return undefined;
+    }
+
+    let frameId = 0;
+    let observer;
+    let previousHasOverflow = null;
+
+    const updateOverflow = () => {
+      const hasOverflow = node.scrollHeight - 1 > node.clientHeight;
+      setProfileHasOverflow((previous) => (previous === hasOverflow ? previous : hasOverflow));
+
+      // When overflow first appears after a resize/layout change, keep the section at Education.
+      if (hasOverflow && previousHasOverflow !== true) {
+        node.scrollTop = 0;
+      }
+      previousHasOverflow = hasOverflow;
+    };
+
+    frameId = window.requestAnimationFrame(updateOverflow);
+
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(updateOverflow);
+      observer.observe(node);
+    }
+
+    window.addEventListener("resize", updateOverflow);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("resize", updateOverflow);
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, [leftPanelMode, cubePhase, profileShellHeight, maxCubeViewportHeight]);
+
+  useEffect(() => {
     if (cubePhase !== "idle" || leftPanelMode !== "projectDetail" || cubeBusyRef.current || !queuedResetRef.current) {
       return;
     }

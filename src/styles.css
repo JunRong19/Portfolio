@@ -1039,7 +1039,7 @@ p {
   margin-top: 0.1rem;
 }
 
-.cube-face-profile .cube-face-inner {
+.cube-face-inner.cube-face-profile {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -1628,6 +1628,10 @@ p {
     height: auto;
     min-height: 0;
     transform: none;
+  }
+
+  .cube-face[data-mobile-visible="true"] .cube-face-profile {
+    max-height: calc(100dvh - 8.5rem);
   }
 
   .timeline-top {
