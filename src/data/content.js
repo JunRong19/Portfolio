@@ -64,7 +64,7 @@ export const hero = {
   headline: "Hello,I'm",
   subheadline: "I'm a final-year computer science student, graduating in 2026.",
   ctas: [
-    { label: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf", primary: true, newTab: true },
+    { label: "Resume", href: "./Tan Jun Rong_Resume_Light.pdf", primary: true, newTab: true },
     { label: "GitHub", href: "https://github.com/JunRong19", newTab: true },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/tan-jun-rong/", newTab: true },
     { label: "Email", href: "mailto:tan.jun.rong@gmail.com", newTab: false },
@@ -243,7 +243,7 @@ export const projects = [
 
 /** @type {ContactItem[]} */
 export const quickContacts = [
-  { id: "resume", label: "Resume", value: "Resume", href: "./Tan_Jun_Rong_Resume_Software_GH.pdf" },
+  { id: "resume", label: "Resume", value: "Resume", href: "./Tan Jun Rong_Resume_Light.pdf" },
   { id: "github", label: "GitHub", value: "github.com/JunRong19", href: "https://github.com/JunRong19" },
   { id: "email", label: "Email", value: "Tanjunrong321@gmail.com", href: "mailto:Tanjunrong321@gmail.com" },
   { id: "linkedin", label: "LinkedIn", value: "linkedin.com/in/tan-jun-rong/", href: "https://www.linkedin.com/in/tan-jun-rong/" },
