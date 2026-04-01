@@ -9,8 +9,15 @@ function App() {
   const BASE_CUBE_SHELL_HEIGHT = 500;
   const DETAIL_HEIGHT_DELTA = 96;
   const CUBE_VIEWPORT_GUTTER = 16;
+  const MOBILE_BREAKPOINT_QUERY = "(max-width: 760px)";
   const { theme, toggleTheme } = useTheme("dark");
   const initialProjectId = projects[0]?.id ?? "";
+  const [isMobileViewport, setIsMobileViewport] = useState(() => (
+    typeof window !== "undefined" && typeof window.matchMedia === "function"
+      ? window.matchMedia(MOBILE_BREAKPOINT_QUERY).matches
+      : false
+  ));
+  const [mobileExpandedProjectId, setMobileExpandedProjectId] = useState("");
   const [expandedProject, setExpandedProject] = useState("");
   const [leftPanelMode, setLeftPanelMode] = useState("profile");
   const [activeProjectId, setActiveProjectId] = useState(initialProjectId);
@@ -36,6 +43,7 @@ function App() {
   const settleFeedbackTimerRef = useRef(null);
   const cubeBusyRef = useRef(false);
   const queuedResetRef = useRef(false);
+  const previousIsMobileViewportRef = useRef(isMobileViewport);
   const [cubeDepth, setCubeDepth] = useState(260);
   const [profileShellHeight, setProfileShellHeight] = useState(BASE_CUBE_SHELL_HEIGHT);
   const [detailShellHeight, setDetailShellHeight] = useState(BASE_CUBE_SHELL_HEIGHT + DETAIL_HEIGHT_DELTA);
@@ -46,7 +54,9 @@ function App() {
   const SETTLE_FEEDBACK_MS = 620;
   const getFaceIndexFromAngle = (angle) => ((Math.round((-angle) / 90) % 4) + 4) % 4;
   const visibleFaceIndex = getFaceIndexFromAngle(cubeAngle);
-  const mobileVisibleFaceIndex = leftPanelMode === "profile" ? 0 : visibleFaceIndex;
+  const mobileVisibleFaceIndex = isMobileViewport
+    ? 0
+    : leftPanelMode === "profile" ? 0 : visibleFaceIndex;
   const getProjectById = (projectId) => projects.find((project) => project.id === projectId) ?? projects[0];
   const resolvePublicAsset = (assetPath) => {
     if (!assetPath) {
@@ -74,7 +84,7 @@ function App() {
     return resolvePublicAsset(href);
   };
   const frontDetailProject = getProjectById(faceProjectMap[0]);
-  const showProfileFront = leftPanelMode === "profile" || cubePhase === "rotating";
+  const showProfileFront = isMobileViewport || leftPanelMode === "profile" || cubePhase === "rotating";
   const isCubeInteractive = cubePhase === "idle";
   const isExpandedHeight = cubePhase !== "returning" && leftPanelMode === "projectDetail";
   const shouldReserveExpandedBottom = leftPanelMode === "projectDetail";
@@ -145,7 +155,7 @@ function App() {
   };
 
   const rotateToProject = (projectId) => {
-    if (!projectId || cubeBusyRef.current || !isCubeInteractive) {
+    if (isMobileViewport || !projectId || cubeBusyRef.current || !isCubeInteractive) {
       return;
     }
     queuedResetRef.current = false;
@@ -240,6 +250,10 @@ function App() {
   };
 
   const resetCube = () => {
+    if (isMobileViewport) {
+      return;
+    }
+
     if (leftPanelMode !== "projectDetail") {
       return;
     }
@@ -251,6 +265,20 @@ function App() {
 
     queuedResetRef.current = false;
     runResetCube();
+  };
+
+  const handleProjectToggle = (projectId, isExpanded) => {
+    if (isMobileViewport) {
+      setMobileExpandedProjectId((previous) => (previous === projectId ? "" : projectId));
+      return;
+    }
+
+    if (isExpanded) {
+      resetCube();
+      return;
+    }
+
+    rotateToProject(projectId);
   };
 
   const renderFaceContent = (className, children) => (
@@ -359,7 +387,17 @@ function App() {
     ));
   };
 
-  const renderProjectFace = (project, keyPrefix) => renderFaceContent("cube-face-detail", (
+  const getProjectMediaItems = (project) => (
+    project.gallery && project.gallery.length
+      ? project.gallery
+      : project.image ? [{
+        type: "image",
+        src: project.image,
+        alt: project.imageAlt ?? `${project.title} preview`,
+      }] : []
+  );
+
+  const renderProjectDetailHeader = (project) => (
     <>
       <div className="project-detail-header">
         <div className="project-detail-heading">
@@ -388,48 +426,47 @@ function App() {
           </a>
         </div>
       ) : null}
-      <div className="project-detail-body">
+    </>
+  );
 
-        {/* <p className="hero-copy-box">{project.summary}</p> */}
-        {/* <div className="tag-row">
-          {project.stack.map((tag) => (
-            <span className="tag" key={`${keyPrefix}-${tag}`}>
-              {tag}
-            </span>
+  const renderProjectDetailBodyContent = (project, keyPrefix) => (
+    <>
+      <div className="project-gallery">
+        {getProjectMediaItems(project).map((item, index) => (
+          <figure className="project-gallery-item" key={`${keyPrefix}-media-${index}`}>
+            {item.type === "video" ? (
+              <video
+                className="project-gallery-video"
+                src={resolvePublicAsset(item.src)}
+                controls
+                preload="metadata"
+              />
+            ) : (
+              <img
+                className="project-gallery-image"
+                src={resolvePublicAsset(item.src)}
+                alt={item.alt ?? `${project.title} screenshot`}
+              />
+            )}
+          </figure>
+        ))}
+      </div>
+      <div className="project-role-block">
+        <h3 className="project-role-title">Role &amp; Responsibilities:</h3>
+        <ul className="simple-list compact">
+          {project.impactBullets.slice(0, 3).map((point) => (
+            <li key={`${keyPrefix}-${point}`}>{point}</li>
           ))}
-        </div> */}
-        <div className="project-gallery">
-          {(project.gallery && project.gallery.length ? project.gallery : project.image ? [{
-            type: "image",
-            src: project.image,
-            alt: project.imageAlt ?? `${project.title} preview`,
-          }] : []).map((item, index) => (
-            <figure className="project-gallery-item" key={`${keyPrefix}-media-${index}`}>
-              {item.type === "video" ? (
-                <video
-                  className="project-gallery-video"
-                  src={resolvePublicAsset(item.src)}
-                  controls
-                  preload="metadata"
-                />
-              ) : (
-                <img
-                  className="project-gallery-image"
-                  src={resolvePublicAsset(item.src)}
-                  alt={item.alt ?? `${project.title} screenshot`}
-                />
-              )}
-            </figure>
-          ))}
-        </div>
-        <div className="project-role-block">
-          <h3 className="project-role-title">Role &amp; Responsibilities:</h3>
-          <ul className="simple-list compact">
-            {project.impactBullets.slice(0, 3).map((point) => (
-              <li key={`${keyPrefix}-${point}`}>{point}</li>
-            ))}
-          </ul>
-        </div>
+        </ul>
+      </div>
+    </>
+  );
+
+  const renderProjectFace = (project, keyPrefix) => renderFaceContent("cube-face-detail", (
+    <>
+      {renderProjectDetailHeader(project)}
+      <div className="project-detail-body">
+        {renderProjectDetailBodyContent(project, keyPrefix)}
       </div>
       <div className="project-detail-footer">
         <button
@@ -443,6 +480,25 @@ function App() {
     </>
   ));
 
+  const renderInlineProjectDetails = (project, keyPrefix, panelId, buttonId, isExpanded) => (
+    <div
+      id={panelId}
+      className="project-inline-details"
+      role="region"
+      aria-labelledby={buttonId}
+      hidden={!isExpanded}
+    >
+      {isExpanded ? (
+        <>
+          {renderProjectDetailHeader(project)}
+          <div className="project-inline-body">
+            {renderProjectDetailBodyContent(project, keyPrefix)}
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+
   useReveal();
   useCursorTrail(trailLayerRef, cursorTrailConfig);
 
@@ -455,6 +511,50 @@ function App() {
         : part
     ));
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return undefined;
+    }
+
+    const mediaQueryList = window.matchMedia(MOBILE_BREAKPOINT_QUERY);
+    const handleViewportChange = (event) => {
+      setIsMobileViewport(event.matches);
+    };
+
+    setIsMobileViewport(mediaQueryList.matches);
+
+    if (typeof mediaQueryList.addEventListener === "function") {
+      mediaQueryList.addEventListener("change", handleViewportChange);
+      return () => mediaQueryList.removeEventListener("change", handleViewportChange);
+    }
+
+    mediaQueryList.addListener(handleViewportChange);
+    return () => mediaQueryList.removeListener(handleViewportChange);
+  }, []);
+
+  useEffect(() => {
+    const wasMobileViewport = previousIsMobileViewportRef.current;
+    if (wasMobileViewport === isMobileViewport) {
+      return;
+    }
+
+    if (isMobileViewport) {
+      clearCubeTimer();
+      clearSettleFeedback();
+      cubeBusyRef.current = false;
+      queuedResetRef.current = false;
+      setPendingProjectId("");
+      setCubePhase("idle");
+      setCubeAngle(0);
+      setLeftPanelMode("profile");
+      setExpandedProject("");
+    } else {
+      setMobileExpandedProjectId("");
+    }
+
+    previousIsMobileViewportRef.current = isMobileViewport;
+  }, [isMobileViewport]);
 
   useEffect(() => {
     const profileNode = profileProbeRef.current;
@@ -754,7 +854,11 @@ function App() {
             {/* <h2>Selected technical work</h2> */}
             <div className="projects-grid">
               {projects.map((project) => {
-                const expanded = expandedProject === project.id;
+                const expanded = isMobileViewport
+                  ? mobileExpandedProjectId === project.id
+                  : expandedProject === project.id;
+                const detailPanelId = `project-inline-details-${project.id}`;
+                const detailButtonId = `project-inline-toggle-${project.id}`;
 
                 return (
                   <article key={project.id} className="project-item">
@@ -804,19 +908,21 @@ function App() {
                     })()}
 
                     <button
+                      id={detailButtonId}
                       type="button"
                       className="project-toggle"
                       aria-expanded={expanded}
+                      aria-controls={isMobileViewport ? detailPanelId : undefined}
                       onClick={() => {
-                        if (expanded) {
-                          resetCube();
-                          return;
-                        }
-                        rotateToProject(project.id);
+                        handleProjectToggle(project.id, expanded);
                       }}
                     >
                       {expanded ? "Hide details" : "View details"}
                     </button>
+
+                    {isMobileViewport ? (
+                      renderInlineProjectDetails(project, `inline-${project.id}`, detailPanelId, detailButtonId, expanded)
+                    ) : null}
                   </article>
                 );
               })}
@@ -833,10 +939,10 @@ function App() {
                     <div className="timeline-copy">
                       <h3 className="timeline-role">{item.role}</h3>
                       <p className="timeline-company">{item.company}</p>
-                    </div>
-                    <div className="timeline-meta">
                       <span className="timeline-period">{item.period}</span>
-                      {item.logo && !isFirefox ? (
+                    </div>
+                    {item.logo && !isFirefox && !isMobileViewport ? (
+                      <div className="timeline-meta">
                         <div className="timeline-logo-wrap">
                           <img
                             className="timeline-logo"
@@ -844,9 +950,18 @@ function App() {
                             alt={item.logoAlt ?? `${item.company} logo`}
                           />
                         </div>
-                      ) : null}
-                    </div>
+                      </div>
+                    ) : null}
                   </div>
+                  {item.logo && !isFirefox && isMobileViewport ? (
+                    <div className="timeline-mobile-logo-wrap">
+                      <img
+                        className="timeline-logo timeline-logo-mobile"
+                        src={resolvePublicAsset(item.logo)}
+                        alt={item.logoAlt ?? `${item.company} logo`}
+                      />
+                    </div>
+                  ) : null}
                   <ul className="simple-list">
                     {item.impactBullets.map((point) => (
                       <li key={point}>{emphasizeNumbers(point)}</li>
