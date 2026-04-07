@@ -129,8 +129,8 @@ export const experiences = [
     logo: "/images/Razer-logo.png",
     logoAlt: "Razer logo",
     impactBullets: [
+      "Engineered an ESP 32-based embedded-system rig that automated end-to-end validation of Razer peripherals, cutting manual testing effort by 60%.",
       "Developed and maintained automated test cases for Razer peripherals, achieving 95% test coverage.",
-      "Built a physical testing rig supporting end-to-end automation, reducing manual testing time by 60%.",
       "Created 4 internal automation tools to automate tasks and improve team workflow efficiency.",
     ],
   },
