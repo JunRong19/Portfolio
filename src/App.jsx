@@ -505,11 +505,20 @@ function App() {
   const emphasizeNumbers = (text) => {
     const tokenRegex = /(\d+(?:\.\d+)?(?:%|\+)?)(?!-star)/g;
     const isNumberToken = /^\d+(?:\.\d+)?(?:%|\+)?$/;
-    return text.split(tokenRegex).map((part, index) => (
-      isNumberToken.test(part)
-        ? <span className="stat" key={`${text}-${index}`}>{part}</span>
-        : part
-    ));
+    const parts = text.split(tokenRegex);
+
+    return parts.map((part, index) => {
+      if (!isNumberToken.test(part)) {
+        return part;
+      }
+
+      const previousPart = parts[index - 1] || "";
+      if (/\bESP\s*$/i.test(previousPart)) {
+        return part;
+      }
+
+      return <span className="stat" key={`${text}-${index}`}>{part}</span>;
+    });
   };
 
   useEffect(() => {
